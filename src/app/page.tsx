@@ -2,6 +2,7 @@ import { Button } from "@/components/ui/button";
 import { Moon, Sun } from "lucide-react";
 import { ModeToggle } from "../components/ModeToggle";
 import ProjectCard from "../components/ProjectCard";
+import { projects } from "../lib/constants";
 
 export default function Home() {
   return (
@@ -11,17 +12,13 @@ export default function Home() {
         <p>I'm Charan</p>
       </div>
       <ModeToggle className="absolute top-5 right-5" />
-      <ProjectCard
-        title="<b>Chat App</b><br/>(Whatsapp Clone)"
-        imgSrc="img.png"
-        youtubeVideoId="5_Ouh0Q_aQo"
-        liveLink="https://chat-app-by-charan.vercel.app/"
-        codeLink="https://github.com/charan-mudiraj/Chat-App"
-        about="A <b>Chatting Web Application</b> similar to <b>WhatsApp</b> where users can
-              share messages, images, videos, and any other files with a single
-              (or) multiple recipients and make calls (Audio/Video) with P2P
-              WebRTC Connection."
-      />
+      <p>Projects:</p>
+      <br />
+      <div className="px-5 flex flex-wrap gap-5">
+        {projects.map((pjt, i) => (
+          <ProjectCard project={pjt} key={i} />
+        ))}
+      </div>
     </div>
   );
 }

@@ -6,32 +6,19 @@ import BoltIcon from "@mui/icons-material/Bolt";
 import CodeIcon from "@mui/icons-material/Code";
 import { useRef, useState } from "react";
 import YouTube, { YouTubeEvent, YouTubePlayer } from "react-youtube";
+import { Project } from "../lib/types";
 
 function ProjectContent({ children, ...props }: { children: React.ReactNode }) {
   return (
     <div
-      className={`flex flex-col justify-between border-[1px] border-zinc-700 rounded-lg text-center px-2 pt-2 pb-3 h-[300px]`}
+      className={`flex flex-col justify-between gap-1 border-[1px] border-zinc-500 rounded-lg text-center px-2 pt-2 pb-3 h-[348px] bg-zinc-200 dark:bg-black`}
     >
       {children}
     </div>
   );
 }
 
-export default function ProjectCard({
-  title,
-  imgSrc,
-  youtubeVideoId,
-  liveLink,
-  codeLink,
-  about,
-}: {
-  title: string;
-  imgSrc: string;
-  youtubeVideoId: string;
-  liveLink: string;
-  codeLink: string;
-  about: string;
-}) {
+export default function ProjectCard({ project }: { project: Project }) {
   const [isHovering, setIsHovering] = useState<boolean>(false);
   const playerRef = useRef<YouTubePlayer | null>(null);
 
@@ -53,59 +40,82 @@ export default function ProjectCard({
       <TabsContent value="preview">
         <ProjectContent>
           <div
-            className="h-[65%] relative rounded-lg overflow-hidden"
+            className="relative rounded-lg overflow-hidden"
             onMouseEnter={(e) => {
+              if (!project.youtubeVideoId) return;
               setIsHovering(true);
               playerRef.current?.playVideo();
             }}
             onMouseLeave={(e) => {
+              if (!project.youtubeVideoId) return;
               setIsHovering(false);
               playerRef.current?.pauseVideo();
             }}
           >
             <img
-              src={imgSrc}
-              className={`rounded-lg h-full aspect-video object-cover`}
+              src={project.imgSrc}
+              className={`rounded-lg aspect-video object-cover h-[181px]`}
             />
-            <YouTube
-              videoId={youtubeVideoId}
-              opts={{
-                height: "181",
-              }}
-              onReady={(e: YouTubeEvent) => {
-                playerRef.current = e.target;
-              }}
-              ref={playerRef}
-              className={`absolute top-0 h-full object-cover rounded-lg z-10 ${
-                isHovering ? "opacity-100" : "opacity-0"
-              } transition-opacity duration-700`}
-            />
+            {project.youtubeVideoId && (
+              <YouTube
+                videoId={project.youtubeVideoId}
+                opts={{
+                  height: "181",
+                }}
+                onReady={(e: YouTubeEvent) => {
+                  playerRef.current = e.target;
+                }}
+                ref={playerRef}
+                className={`absolute top-0 h-full object-cover rounded-lg z-10 ${
+                  isHovering ? "opacity-100" : "opacity-0"
+                } transition-opacity duration-700`}
+              />
+            )}
           </div>
           <div
-            className="text-lg opacity-80"
-            dangerouslySetInnerHTML={{ __html: title }}
+            className="text-lg opacity-80 cursor-pointer hover:underline"
+            dangerouslySetInnerHTML={{ __html: project.title }}
           />
-          <div className="flex w-full justify-between gap-2 px-2">
-            <Link href={liveLink} className="w-full">
-              <Button className="w-full font-bold">
-                Live
-                <BoltIcon className="text-orange-400" />
-              </Button>
-            </Link>
-            <Link href={codeLink} className="w-full">
-              <Button className="w-full font-bold">
-                Code
-                <CodeIcon className="ml-1 text-blue-500" />
-              </Button>
-            </Link>
+          <div className="px-2 space-y-2">
+            <div className="flex w-full justify-between gap-2">
+              <Link href={project.liveLink} target="_blank" className="w-full">
+                <Button className="w-full font-bold bg-zinc-800 dark:bg-zinc-200">
+                  Live
+                  <BoltIcon className="text-orange-400" />
+                </Button>
+              </Link>
+              <Link href={project.codeLink} target="_blank" className="w-full">
+                <Button className="w-full font-bold bg-zinc-800 dark:bg-zinc-200">
+                  Code
+                  <CodeIcon className="ml-1 text-blue-500" />
+                </Button>
+              </Link>
+            </div>
+            <Button className="w-full font-bold bg-zinc-800 dark:bg-zinc-200">
+              More Details
+            </Button>
           </div>
         </ProjectContent>
       </TabsContent>
 
-      <TabsContent value="about" className="text-zinc-400">
+      <TabsContent value="about" className="dark:text-zinc-400 text-zinc-600">
         <ProjectContent>
-          <div className="h-full flex flex-col justify-center px-1">
-            <p dangerouslySetInnerHTML={{ __html: about }} />
+          <div className="h-full flex flex-col px-1 py-1 justify-between">
+            <div>
+              <p
+                dangerouslySetInnerHTML={{ __html: project.title }}
+                className="text-xl cursor-pointer hover:underline"
+              />
+              <p
+                dangerouslySetInnerHTML={{ __html: project.about }}
+                className="mt-2"
+              />
+            </div>
+
+            <img
+              src={`https://skillicons.dev/icons?i=${project.stack.join(",")}`}
+              className="h-8 dark:opacity-80 opacity-90 relative bottom-0 mb-2"
+            />
           </div>
         </ProjectContent>
       </TabsContent>
