@@ -1,24 +1,84 @@
 export const skillIconsKeywords = {
-  javascript: "js",
-  typescript: "ts",
-  firebase: "firebase",
-  html: "html",
-  nodeJS: "nodejs",
-  reactJS: "react",
-  nectJS: "next",
-  tailwindCss: "tailwind",
-  css: "css",
-  bootstrap: "bootstrap",
-  expressJS: "express",
-  materialUI: "materialui",
-  dart: "dart",
-  flutter: "flutter",
-  mongoDB: "mongodb",
-  docker: "docker",
-  aws: "aws",
-  c: "c",
-  java: "java",
-  photoshop: "ps",
+  javascript: {
+    code: "js",
+    title: "Javascript",
+  },
+  typescript: {
+    code: "ts",
+    title: "Typescript",
+  },
+  firebase: {
+    code: "firebase",
+    title: "Firebase",
+  },
+  html: {
+    code: "html",
+    title: "HTML",
+  },
+  nodeJS: {
+    code: "nodejs",
+    title: "NodeJS",
+  },
+  reactJS: {
+    code: "react",
+    title: "ReactJS",
+  },
+  nectJS: {
+    code: "next",
+    title: "NextJS",
+  },
+  tailwindCss: {
+    code: "tailwind",
+    title: "Tailwind",
+  },
+  css: {
+    code: "css",
+    title: "CSS",
+  },
+  bootstrap: {
+    code: "bootstrap",
+    title: "Bootstrap",
+  },
+  expressJS: {
+    code: "expressjs",
+    title: "ExpressJS",
+  },
+  materialUI: {
+    code: "materialui",
+    title: "Material UI",
+  },
+  dart: {
+    code: "dart",
+    title: "Dart",
+  },
+  flutter: {
+    code: "flutter",
+    title: "Flutter",
+  },
+  mongoDB: {
+    code: "mongodb",
+    title: "MongoDB",
+  },
+  docker: {
+    code: "docker",
+    title: "Docker",
+  },
+  aws: {
+    code: "aws",
+    title: "AWS(Amazon Web Services)",
+  },
+  c: {
+    code: "c",
+    title: "C Language",
+  },
+  java: {
+    code: "java",
+    title: "Java",
+  },
+  photoshop: {
+    code: "ps",
+    title: "Adobe Photoshop",
+  },
 };
 
 export const projects = [

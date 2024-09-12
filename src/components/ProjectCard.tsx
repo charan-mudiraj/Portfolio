@@ -9,6 +9,7 @@ import YouTube, { YouTubeEvent, YouTubePlayer } from "react-youtube";
 import { Project } from "../lib/types";
 import {
   Dialog,
+  DialogClose,
   DialogContent,
   DialogDescription,
   DialogFooter,
@@ -17,6 +18,7 @@ import {
   DialogTrigger,
 } from "./ui/dialog";
 import { getProjectContent } from "../lib/utils";
+import { Tooltip } from "@mui/material";
 
 function ProjectContent({ children, ...props }: { children: React.ReactNode }) {
   return (
@@ -45,9 +47,33 @@ export function ProjectDialogBox({ project }: { project: Project }) {
           dangerouslySetInnerHTML={{ __html: project.about }}
         />
       </DialogHeader>
-      <div dangerouslySetInnerHTML={{ __html: projectContent }} />
-      <DialogFooter className="sm:justify-start">
-        <p>Footer</p>
+      <div className="overflow-auto h-full max-h-[calc(100%-20px)] leading-7">
+        <div
+          dangerouslySetInnerHTML={{ __html: projectContent }}
+          className="project-content"
+        />
+        {/* <div>{projectContent}</div> */}
+      </div>
+      <DialogFooter>
+        <div className="w-1/2 flex gap-3">
+          <Link href={project.liveLink} target="_blank" className="w-full">
+            <Button className="w-full font-bold bg-zinc-800 dark:bg-zinc-200">
+              Live
+              <BoltIcon className="text-orange-400" />
+            </Button>
+          </Link>
+          <Link href={project.codeLink} target="_blank" className="w-full">
+            <Button className="w-full font-bold bg-zinc-800 dark:bg-zinc-200">
+              Code
+              <CodeIcon className="ml-1 text-blue-500" />
+            </Button>
+          </Link>
+          <DialogClose asChild>
+            <Button type="button" variant="secondary" className="w-full">
+              Close
+            </Button>
+          </DialogClose>
+        </div>
       </DialogFooter>
     </>
   );
@@ -141,7 +167,7 @@ export default function ProjectCard({ project }: { project: Project }) {
                     More Details
                   </Button>
                 </DialogTrigger>
-                <DialogContent className="overflow-auto max-h-screen">
+                <DialogContent className="max-h-[calc(100%-50px)] max-w-[calc(100%-100px)] flex flex-col">
                   <ProjectDialogBox project={project} />
                 </DialogContent>
               </Dialog>
@@ -160,12 +186,16 @@ export default function ProjectCard({ project }: { project: Project }) {
                 dangerouslySetInnerHTML={{ __html: project.about }}
                 className="mt-1 mb-2 overflow-auto px-1"
               />
-              <img
-                src={`https://skillicons.dev/icons?i=${project.stack.join(
-                  ","
-                )}`}
-                className="h-8 dark:opacity-80 opacity-90 relative bottom-0 mb-2"
-              />
+              <div className="flex flex-wrap gap-3 justify-center">
+                {project.stack.map((skill, i) => (
+                  <Tooltip title={skill.title} arrow placement="bottom" key={i}>
+                    <img
+                      src={`https://skillicons.dev/icons?i=${skill.code}`}
+                      className="h-8 dark:opacity-80 opacity-90 relative bottom-0 mb-2"
+                    />
+                  </Tooltip>
+                ))}
+              </div>
             </div>
           </ProjectContent>
         </TabsContent>

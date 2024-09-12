@@ -1,6 +1,7 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
 @layer base {
   :root {
     --background: 0 0% 100%;
@@ -62,6 +63,24 @@
   ::-webkit-scrollbar-thumb {
     border-radius: 5px;
     background-color: rgb(48, 48, 48);
+  }
+  .project-content a {
+    color: rgb(0, 110, 255);
+  }
+  .project-content a:hover {
+    text-decoration: underline;
+  }
+  .project-content ul {
+    list-style-type: circle;
+    padding-left: 50px;
+  }
+  .project-content h1 {
+    font-weight: bold;
+  }
+  .project-content p,
+  li {
+    opacity: 80%;
+    padding-left: 20px;
   }
 }
 @layer base {
