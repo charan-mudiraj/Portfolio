@@ -82,6 +82,10 @@
     opacity: 80%;
     padding-left: 20px;
   }
+  .project-content img {
+    max-width: 60%;
+    margin: 5px 0;
+  }
 }
 @layer base {
   * {

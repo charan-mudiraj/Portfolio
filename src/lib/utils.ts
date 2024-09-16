@@ -31,30 +31,31 @@ export const cropPhoto = (imageUrl: string) => {
   });
 };
 
-async function fetchReadme(repoURL: string, path: string) {
-  const url = `https://raw.githubusercontent.com/${path}/main/README.md`; // readme from `main` branch
+async function fetchReadme(path: string, branch = "main") {
+  const url = `https://raw.githubusercontent.com/${path}/${branch}/README.md`;
   const response = await fetch(url);
-  if (!response.ok) throw new Error("Failed to fetch README.md");
-  return await response.text(); // Return the Raw Markdown
-}
-
-function convertMarkdownToHtml(markdownContent: string) {
-  return marked(markdownContent);
+  if (!response.ok) {
+    if (branch === "master") {
+      throw new Error("Failed to fetch README.md");
+    } else {
+      return await fetchReadme(path, "master");
+    }
+  }
+  const projectContentInMarkDown = await response.text(); // Raw Markdown
+  let projectContentInHTML = await marked(projectContentInMarkDown);
+  projectContentInHTML = projectContentInHTML
+    .replace(
+      /src="\.\//g,
+      `src="https://raw.githubusercontent.com/${path}/${branch}/`
+    )
+    .replace(/height="(\d+px)"/g, 'style="height:$1"')
+    .replace(/width="(\d+px)"/g, 'style="width:$1"');
+  return projectContentInHTML;
 }
 
 export async function getProjectContent(repoURL: string) {
   const parsedURL = new URL(repoURL);
   const path = parsedURL.pathname.substring(1);
-  const projectContentInMarkDown = await fetchReadme(repoURL, path);
-  let projectContentInHTML = await convertMarkdownToHtml(
-    projectContentInMarkDown
-  );
-  projectContentInHTML = projectContentInHTML
-    .replace(
-      /src="\.\//g,
-      `src="https://raw.githubusercontent.com/${path}/main/`
-    )
-    .replace(/height="(\d+px)"/g, 'style="height:$1"')
-    .replace(/width="(\d+px)"/g, 'style="width:$1"');
-  return projectContentInHTML;
+  const projectContent = await fetchReadme(path);
+  return projectContent;
 }
