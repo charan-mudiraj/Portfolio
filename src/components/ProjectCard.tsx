@@ -4,7 +4,9 @@ import { Button } from "./ui/button";
 import Link from "next/link";
 import BoltIcon from "@mui/icons-material/Bolt";
 import CodeIcon from "@mui/icons-material/Code";
-import { useEffect, useRef, useState } from "react";
+import GetAppIcon from "@mui/icons-material/GetApp";
+import CloudDownloadIcon from "@mui/icons-material/CloudDownload";
+import React, { useEffect, useRef, useState } from "react";
 import YouTube, { YouTubeEvent, YouTubePlayer } from "react-youtube";
 import { Project } from "../lib/types";
 import {
@@ -40,7 +42,7 @@ export function ProjectDialogBox({ project }: { project: Project }) {
   }, []);
 
   return (
-    <>
+    <React.Fragment>
       <DialogHeader>
         <DialogTitle dangerouslySetInnerHTML={{ __html: project.title }} />
         <DialogDescription
@@ -58,8 +60,18 @@ export function ProjectDialogBox({ project }: { project: Project }) {
         <div className="w-1/2 flex gap-3">
           <Link href={project.liveLink} target="_blank" className="w-full">
             <Button className="w-full font-bold bg-zinc-800 dark:bg-zinc-200">
-              Live
-              <BoltIcon className="text-orange-400" />
+              {project.type === "web" && (
+                <>
+                  <p>Live</p>
+                  <BoltIcon className="text-orange-400" />
+                </>
+              )}
+              {project.type === "mobile" && (
+                <>
+                  <p>Download APK</p>&nbsp;
+                  <CloudDownloadIcon className="dark:text-zinc-600 text-zinc-300" />
+                </>
+              )}
             </Button>
           </Link>
           <Link href={project.codeLink} target="_blank" className="w-full">
@@ -75,7 +87,7 @@ export function ProjectDialogBox({ project }: { project: Project }) {
           </DialogClose>
         </div>
       </DialogFooter>
-    </>
+    </React.Fragment>
   );
 }
 
@@ -89,11 +101,10 @@ export default function ProjectCard({ project }: { project: Project }) {
         defaultValue="preview"
         className="w-[318px] flex flex-col justify-center"
       >
-        <TabsList>
+        <TabsList className="light:bg-zinc-200">
           <TabsTrigger value="preview" className="w-full">
             Preview
           </TabsTrigger>
-
           <TabsTrigger value="about" className="w-full">
             About
           </TabsTrigger>
@@ -146,8 +157,18 @@ export default function ProjectCard({ project }: { project: Project }) {
                   className="w-full"
                 >
                   <Button className="w-full font-bold bg-zinc-800 dark:bg-zinc-200">
-                    Live
-                    <BoltIcon className="text-orange-400" />
+                    {project.type === "web" && (
+                      <>
+                        <p>Live</p>
+                        <BoltIcon className="text-orange-400" />
+                      </>
+                    )}
+                    {project.type === "mobile" && (
+                      <>
+                        <p>Download APK</p>&nbsp;
+                        <CloudDownloadIcon className="dark:text-zinc-600 text-zinc-300" />
+                      </>
+                    )}
                   </Button>
                 </Link>
                 <Link

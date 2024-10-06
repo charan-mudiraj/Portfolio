@@ -1,4 +1,6 @@
-export const skillIconsKeywords = {
+import { Project, Skill } from "./types";
+
+export const skillIconsKeywords: Record<string, Skill> = {
   javascript: {
     code: "js",
     title: "Javascript",
@@ -81,10 +83,11 @@ export const skillIconsKeywords = {
   },
 };
 
-export const projects = [
+export const projects: Project[] = [
   {
     id: 1,
     title: "<b>Chat App</b><br/>(Whatsapp Clone)",
+    type: "web",
     imgSrc:
       "https://firebasestorage.googleapis.com/v0/b/portfolio-4c137.appspot.com/o/projects_thumbs%2Fchat-app.png?alt=media&token=f2a1086a-bdd4-4bd1-80b0-b167db444987",
     youtubeVideoId: "5_Ouh0Q_aQo",
@@ -102,6 +105,7 @@ export const projects = [
   {
     id: 2,
     title: "Get JSON<br/>(Web Scraper)",
+    type: "web",
     imgSrc:
       "https://firebasestorage.googleapis.com/v0/b/portfolio-4c137.appspot.com/o/projects_thumbs%2Fget-json.png?alt=media&token=2b202dd0-32f6-4cf9-bcbc-863e16d0cb93",
     youtubeVideoId: "XYSKLEEvNYc",
@@ -120,6 +124,7 @@ export const projects = [
   {
     id: 3,
     title: "Amazon Clone",
+    type: "web",
     imgSrc:
       "https://firebasestorage.googleapis.com/v0/b/portfolio-4c137.appspot.com/o/projects_thumbs%2Famazon-clone.png?alt=media&token=46a9ef84-4b22-401b-badb-8d69dea2f4a2",
     youtubeVideoId: "i4AHrKErNyk",
@@ -136,6 +141,7 @@ export const projects = [
   {
     id: 4,
     title: "Flash Chat",
+    type: "mobile",
     imgSrc:
       "https://firebasestorage.googleapis.com/v0/b/portfolio-4c137.appspot.com/o/projects_thumbs%2Fflash-chat.png?alt=media&token=afa21cc5-8669-4f93-9a48-c69e136457a6",
     youtubeVideoId: "",
@@ -144,11 +150,16 @@ export const projects = [
     codeLink: "https://github.com/charan-mudiraj/Flash-Chat",
     about:
       "Flash Chat is a Real-time messaging android app connected to Firebase DB to store and fetch the latest list of messages. Fireauth to authenticate users with Signup/Login features. Applied Producer-Consumer approach for getting messages in chronological order and avoiding Read-Write conflicts.",
-    stack: [skillIconsKeywords.dart, skillIconsKeywords.firebase],
+    stack: [
+      skillIconsKeywords.flutter,
+      skillIconsKeywords.dart,
+      skillIconsKeywords.firebase,
+    ],
   },
   {
     id: 5,
     title: "Attendance Portal",
+    type: "web",
     imgSrc:
       "https://firebasestorage.googleapis.com/v0/b/portfolio-4c137.appspot.com/o/projects_thumbs%2Fattendance-portal.png?alt=media&token=826ce698-3af6-4b9d-97f2-1234605375f9",
     youtubeVideoId: "",
@@ -166,6 +177,7 @@ export const projects = [
   {
     id: 6,
     title: "Netflix Clone",
+    type: "web",
     imgSrc:
       "https://firebasestorage.googleapis.com/v0/b/portfolio-4c137.appspot.com/o/projects_thumbs%2Fnetflix-clone.jpg?alt=media&token=8ae2c3fe-8f7a-456e-8268-b6675e76fb4b",
     youtubeVideoId: "4yTfJ_uDS7U",
@@ -181,6 +193,7 @@ export const projects = [
   {
     id: 7,
     title: "ODALS(Online Driving Assessment and Licensing Exam)",
+    type: "web",
     imgSrc:
       "https://firebasestorage.googleapis.com/v0/b/portfolio-4c137.appspot.com/o/projects_thumbs%2Fodals.png?alt=media&token=b0caf4bd-d195-47fa-ad2f-1131e6a52e1a",
     youtubeVideoId: "s74KGbOHtb8",
@@ -200,24 +213,19 @@ export const projects = [
   {
     id: 8,
     title: "Amrutam(Healthcare E.com Store)",
+    type: "web",
     imgSrc:
       "https://firebasestorage.googleapis.com/v0/b/portfolio-4c137.appspot.com/o/projects_thumbs%2Famrutam.png?alt=media&token=d5e9e766-bafc-4fa6-80bb-8a83ed7ca8eb",
     youtubeVideoId: "F-ckp7gk5Ik",
     liveLink: "https://amrutam-assignment-by-charan.vercel.app/",
     codeLink: "https://github.com/charan-mudiraj/Amrutam-Pharma---Assignment",
     about: "",
-    stack: [
-      skillIconsKeywords.reactJS,
-      skillIconsKeywords.materialUI,
-      skillIconsKeywords.javascript,
-      skillIconsKeywords.expressJS,
-      skillIconsKeywords.mongoDB,
-      skillIconsKeywords.nodeJS,
-    ],
+    stack: [skillIconsKeywords.reactJS, skillIconsKeywords.javascript],
   },
   {
     id: 9,
     title: "News2Day(Daily News App)",
+    type: "web",
     imgSrc:
       "https://firebasestorage.googleapis.com/v0/b/portfolio-4c137.appspot.com/o/projects_thumbs%2Fnew-2-day.jpg?alt=media&token=00050b52-6ff8-4942-a6d8-2edefeca59c4",
     youtubeVideoId: "epSGZ8JQA2Y",
@@ -230,6 +238,7 @@ export const projects = [
   {
     id: 10,
     title: "Simple E.com App",
+    type: "web",
     imgSrc:
       "https://firebasestorage.googleapis.com/v0/b/portfolio-4c137.appspot.com/o/projects_thumbs%2Fecom.jpeg?alt=media&token=111ea079-5f80-4dd6-876a-8a3954beb7bd",
     youtubeVideoId: "",
@@ -242,6 +251,7 @@ export const projects = [
   {
     id: 11,
     title: "Canva Editor",
+    type: "web",
     imgSrc:
       "https://firebasestorage.googleapis.com/v0/b/portfolio-4c137.appspot.com/o/projects_thumbs%2Fcanva.png?alt=media&token=4d4d5179-2f26-41d5-924b-188889b6b83a",
     youtubeVideoId: "",
