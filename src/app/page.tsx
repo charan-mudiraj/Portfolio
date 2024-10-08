@@ -1,13 +1,17 @@
 "use client";
-import { Button } from "@/components/ui/button";
-import { Moon, Sun } from "lucide-react";
 import { ModeToggle } from "../components/ModeToggle";
 import ProjectCard from "../components/ProjectCard";
 import { projects, skillIconsKeywords } from "../lib/constants";
 import { Tooltip } from "@mui/material";
-import { useAtom, useAtomValue } from "jotai";
+import { useAtom } from "jotai";
 import { skillsFilterAtom } from "../lib/atoms";
-import React from "react";
+import React, { useEffect, useState } from "react";
+import { DB } from "../firestore";
+import { doc, getDoc } from "firebase/firestore";
+
+interface OnlineStatus {
+  isOnline: boolean;
+}
 
 function SkillsIcons() {
   const [skillsFilter, setSkillsFilter] = useAtom(skillsFilterAtom);
@@ -41,6 +45,7 @@ function SkillsIcons() {
 
 export default function Home() {
   const [skillsFilter, setSkillsFilter] = useAtom(skillsFilterAtom);
+  const [amIOnline, setAmIOnline] = useState(false);
 
   const getFilteredProjects = () => {
     return projects.filter((pjt) =>
@@ -52,8 +57,34 @@ export default function Home() {
     );
   };
   const filteredProjects = getFilteredProjects();
+
+  useEffect(() => {
+    const docRef = doc(DB, "background", "online-status");
+    getDoc(docRef)
+      .then((docSnap) => {
+        if (docSnap.exists()) {
+          const data = docSnap.data() as OnlineStatus;
+          if (data.isOnline) setAmIOnline(data.isOnline);
+        } else {
+          throw new Error("Failed to fetch online status");
+        }
+      })
+      .catch((err) => {
+        console.error(err);
+      });
+  }, []);
+
   return (
     <div className="flex flex-col items-center pb-6 px-16">
+      <div className="flex gap-2">
+        Online Status:{" "}
+        <div
+          className={`${
+            amIOnline ? "bg-green-500" : "bg-zinc-500"
+          } p-3 rounded-full`}
+        />
+      </div>
+
       <div className="text-center mt-5 text-xl font-light font-mono">
         <p>Hello There !</p>
         <p>I'm Charan</p>
