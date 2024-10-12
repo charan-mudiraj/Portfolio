@@ -5,9 +5,12 @@ import { projects, skillIconsKeywords } from "../lib/constants";
 import { Tooltip } from "@mui/material";
 import { useAtom } from "jotai";
 import { skillsFilterAtom } from "../lib/atoms";
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { DB } from "../firestore";
 import { doc, getDoc } from "firebase/firestore";
+import { Input } from "../components/ui/input";
+import { Button } from "../components/ui/button";
+import Chat from "../components/Chat";
 
 interface OnlineStatus {
   isOnline: boolean;
@@ -22,7 +25,7 @@ function SkillsIcons() {
         <Tooltip title={skill.title} arrow placement="top" key={i}>
           <img
             src={`https://skillicons.dev/icons?i=${skill.code}`}
-            className={`cursor-pointer duration-300 active:scale-[0.85] ${
+            className={`cursor-pointer active:duration-300 duration-150 active:scale-[0.85] ${
               skillsFilter.includes(skill.code) && "opacity-50 scale-[0.85]"
             }`}
             onClick={() =>
@@ -56,6 +59,7 @@ export default function Home() {
         : true
     );
   };
+
   const filteredProjects = getFilteredProjects();
 
   useEffect(() => {
@@ -112,7 +116,9 @@ export default function Home() {
         <SkillsIcons />
       </div>
       <br />
-      <div className="w-full">
+      <Chat />
+      <br />
+      {/* <div className="w-full">
         <p className="text-xl">Projects:</p>
         <br />
         <div className="px-5 flex flex-wrap gap-5 justify-evenly">
@@ -132,7 +138,7 @@ export default function Home() {
             </p>
           )}
         </div>
-      </div>
+      </div> */}
     </div>
   );
 }

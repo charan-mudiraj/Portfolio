@@ -1,4 +1,10 @@
-import { Project, Skill } from "./types";
+import { LocalStorageKeys, Project, Skill } from "./types";
+
+export const localStorageKeys: LocalStorageKeys = {
+  userId: "userID",
+};
+
+export const fallbackUserIdEncryptionKey = "123";
 
 export const skillIconsKeywords: Record<string, Skill> = {
   javascript: {

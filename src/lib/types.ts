@@ -15,3 +15,25 @@ export interface Project {
   about: string;
   stack: Skill[];
 }
+export enum MessageStatus {
+  WAITING = "WAITING",
+  SENT = "SENT",
+  SEEN = "SEEN",
+}
+export interface Message {
+  id: string;
+  message: string;
+  status: MessageStatus;
+  senderId: string;
+  time: string;
+}
+
+export interface LocalStorageKeys {
+  userId: string; // encrypted id string
+}
+
+export interface User {
+  id: string; // (docID)
+  name: string;
+  chatId: string; // chatId === id (collectionID)
+}
