@@ -1,6 +1,7 @@
 import { clsx, type ClassValue } from "clsx";
 import { twMerge } from "tailwind-merge";
 import { marked } from "marked";
+import { PromiseReturnValue } from "./types";
 
 export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs));
@@ -83,4 +84,18 @@ export const getCurrentTime = () => {
   const time =
     hours + ":" + date.getMinutes().toString().padStart(2, "0") + " " + period;
   return time;
+};
+
+export const getPromiseReturnValue = (
+  isSuccess: boolean,
+  message: string,
+  data?: any
+) => {
+  const val: PromiseReturnValue = {
+    isSuccess,
+    message,
+  };
+  if (data) val.data = data;
+
+  return val;
 };
