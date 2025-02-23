@@ -15,6 +15,12 @@ const config: Config = {
         sm: "calc(var(--radius) - 4px)",
       },
       colors: {
+        primary_chat: "#6b8afd",
+        secondary_chat: "#2e333d",
+        dark_chat: "#212328",
+        danger_chat: "#eb3330",
+        success_chat: "#4aac68",
+        chat: "#006654",
         "primary-color": "#a855f7",
         background: "hsl(var(--background))",
         foreground: "hsl(var(--foreground))",

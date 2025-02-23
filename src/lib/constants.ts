@@ -1,10 +1,29 @@
-import { LocalStorageKeys, Project, Skill } from "./types";
+import { Project, Skill } from "./types";
 
-export const localStorageKeys: LocalStorageKeys = {
+export const fallbackUserIdEncryptionKey = "123";
+
+export const localStorageKeys = {
   userId: "userID",
 };
 
-export const fallbackUserIdEncryptionKey = "123";
+export const firebaseCollectionsNames = {
+  backgroud: "backgroud",
+  users: "users",
+};
+
+export const errorMessages = {
+  userIdNotFound: "User ID not found",
+  userNotFound: "User Not Found",
+  userNotCreated: "Failed creating a user",
+  messageNotSent: "Failed to send a message",
+};
+
+export const successMessages = {
+  userNameUpdated: "Username updated successfully",
+  userCreated: "New user created successfully",
+  messagesSent: "Messages sent successfully",
+  userFound: "User Found",
+};
 
 export const skillIconsKeywords: Record<string, Skill> = {
   javascript: {

@@ -10,7 +10,7 @@ import { DB } from "../firestore";
 import { doc, getDoc } from "firebase/firestore";
 import { Input } from "../components/ui/input";
 import { Button } from "../components/ui/button";
-import Chat from "../components/Chat";
+import { Chat } from "../components/Chat";
 
 interface OnlineStatus {
   isOnline: boolean;
@@ -118,7 +118,7 @@ export default function Home() {
       <br />
       <Chat />
       <br />
-      {/* <div className="w-full">
+      <div className="w-full">
         <p className="text-xl">Projects:</p>
         <br />
         <div className="px-5 flex flex-wrap gap-5 justify-evenly">
@@ -138,7 +138,7 @@ export default function Home() {
             </p>
           )}
         </div>
-      </div> */}
+      </div>
     </div>
   );
 }

@@ -22,18 +22,51 @@ export enum MessageStatus {
 }
 export interface Message {
   id: string;
+  docId?: string;
   message: string;
   status: MessageStatus;
   senderId: string;
   time: string;
 }
 
-export interface LocalStorageKeys {
-  userId: string; // encrypted id string
-}
-
 export interface User {
   id: string; // (docID)
   name: string;
   chatId: string; // chatId === id (collectionID)
+}
+
+export class Queue {
+  private list: Message[];
+
+  constructor() {
+    this.list = [];
+  }
+
+  enqueue(x: Message) {
+    this.list.push(x);
+  }
+
+  dequeue() {
+    if (this.isEmpty()) {
+      return -1;
+    }
+    return this.list.shift();
+  }
+
+  isEmpty() {
+    if (this.getSize() == 0) {
+      return true;
+    }
+    return false;
+  }
+
+  getSize() {
+    return this.list.length;
+  }
+}
+
+export interface PromiseReturnValue {
+  isSuccess: boolean;
+  message: string;
+  data?: any;
 }
