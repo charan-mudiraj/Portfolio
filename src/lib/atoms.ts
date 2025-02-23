@@ -1,6 +1,8 @@
-import { atom } from "jotai";
-import { Message } from "./types";
+import { atom, createStore } from "jotai";
+import { Message, User } from "./types";
+
+export const atomStore = createStore();
 
 export const skillsFilterAtom = atom<string[]>([]);
 
-export const messagesAtom = atom<Message[]>([]);
+export const userAtom = atom<User | undefined>();

@@ -100,7 +100,6 @@ export const sendQueuedMessages = async () => {
   while ((messageToSend = messagesQueue.dequeue()) !== -1) {
     const messagesCollectionRef = collection(DB, userId!);
     try {
-      console.log("were here");
       await addDoc(messagesCollectionRef, messageToSend as Message);
     } catch (err) {
       console.error(err);
