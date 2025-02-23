@@ -57,7 +57,13 @@ const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
         }}
         disabled={props.disabled || loading}
       >
-        <p className={`opacity-${loading ? "0" : "1"}`}>{props.children}</p>
+        <div
+          className={`flex items-center justify-center opacity-${
+            loading ? "0" : "1"
+          }`}
+        >
+          {props.children}
+        </div>
         {loading && <Loader2 className="animate-spin absolute" />}
       </Comp>
     );
