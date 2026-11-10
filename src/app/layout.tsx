@@ -1,14 +1,29 @@
 import type { Metadata } from "next";
 import { Poppins } from "next/font/google";
 import "./globals.css";
+import { Analytics } from "@vercel/analytics/next";
 import { ThemeProvider } from "../components/theme-provider";
+import { siteUrl } from "../lib/constants";
 
 const inter = Poppins({ subsets: ["latin"], weight: "300" });
 
+const title = "Charan Mudiraj · Full-stack developer";
+const description =
+  "Charan Mudiraj is a full-stack developer in Hyderabad, India, building production web apps with React, TypeScript, Django and PostgreSQL at GrowMeOrganic.";
+
+// The preview image itself comes from opengraph-image.tsx.
 export const metadata: Metadata = {
-  title: "Charan Mudiraj",
-  description:
-    "Charan Mudiraj is a Full-Stack Web Developer from India, skilled in MERN stack and Next.js. With multiple internship experiences, he brings expertise in building dynamic and scalable web applications.",
+  metadataBase: new URL(siteUrl),
+  title,
+  description,
+  openGraph: {
+    title,
+    description,
+    url: "/",
+    siteName: "Charan Mudiraj",
+    type: "website",
+  },
+  twitter: { card: "summary_large_image", title, description },
 };
 
 export default function RootLayout({
@@ -31,6 +46,10 @@ export default function RootLayout({
         >
           {children}
         </ThemeProvider>
+        {/* Vercel Web Analytics: page views only send data once Analytics
+            is enabled for the project in the Vercel dashboard. In dev it
+            just logs to the console. */}
+        <Analytics />
       </body>
     </html>
   );

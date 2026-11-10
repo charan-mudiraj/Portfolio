@@ -29,9 +29,11 @@
     --chart-4: 43 74% 66%;
     --chart-5: 27 87% 67%;
     --radius: 0.5rem;
-    /* .page-backdrop */
+    /* .page-backdrop (grid) and .page-glow */
     --backdrop-grid: rgb(24 24 27 / 0.07);
-    --backdrop-glow: rgb(168 85 247 / 0.14);
+    --glow-beam: rgb(192 132 252 / 0.3);
+    --glow-core: rgb(168 85 247 / 0.28);
+    --glow-halo: rgb(139 92 246 / 0.16);
   }
   .dark {
     --background: 240 10% 3.9%;
@@ -59,7 +61,9 @@
     --chart-4: 280 65% 60%;
     --chart-5: 340 75% 55%;
     --backdrop-grid: rgb(255 255 255 / 0.05);
-    --backdrop-glow: rgb(168 85 247 / 0.2);
+    --glow-beam: rgb(216 180 254 / 0.32);
+    --glow-core: rgb(168 85 247 / 0.5);
+    --glow-halo: rgb(124 58 237 / 0.3);
   }
   ::-webkit-scrollbar {
     width: 5px;
@@ -93,26 +97,41 @@
   }
 }
 @layer components {
-  /* Faint grid with a purple glow behind the top of the page. Sits behind the
-     page content (z-index -1 inside page.tsx's `isolate` wrapper) and fades
-     out towards the sides and bottom. Colours come from --backdrop-* above. */
+  /* Purple glow at the top of the page: a bright beam, a core and a wide
+     halo, stacked. Behind the content (z-index -1 inside page.tsx's `isolate`
+     wrapper). It "blooms" out from the top centre on page load, and again on
+     every theme change (PageGlow.tsx restarts the animation). */
+  .page-glow {
+    position: absolute;
+    inset: 0 0 auto 0;
+    height: 820px;
+    z-index: -1;
+    pointer-events: none;
+    background-image: radial-gradient(
+        ellipse 22% 20% at 50% 0%,
+        var(--glow-beam),
+        transparent 70%
+      ),
+      radial-gradient(ellipse 42% 48% at 50% 0%, var(--glow-core), transparent 72%),
+      radial-gradient(ellipse 75% 70% at 50% 0%, var(--glow-halo), transparent 75%);
+    transform-origin: 50% 0;
+    animation: glow-bloom 1.8s cubic-bezier(0.16, 1, 0.3, 1) both;
+  }
+
+  /* Faint grid over the glow, fading out towards the sides and bottom. */
   .page-backdrop {
     position: absolute;
     inset: 0 0 auto 0;
     height: 760px;
     z-index: -1;
     pointer-events: none;
-    background-image: radial-gradient(
-        ellipse 55% 60% at 50% 0%,
-        var(--backdrop-glow),
-        transparent 70%
+    background-image: linear-gradient(
+        to right,
+        var(--backdrop-grid) 1px,
+        transparent 1px
       ),
-      linear-gradient(to right, var(--backdrop-grid) 1px, transparent 1px),
       linear-gradient(to bottom, var(--backdrop-grid) 1px, transparent 1px);
-    background-size:
-      100% 100%,
-      48px 48px,
-      48px 48px;
+    background-size: 48px 48px;
     background-position: center top;
     -webkit-mask-image: radial-gradient(
       ellipse 75% 100% at 50% 0%,
@@ -124,6 +143,65 @@
       black 35%,
       transparent 80%
     );
+  }
+}
+
+/* The glow grows from a sliver at the top centre to full size. */
+@keyframes glow-bloom {
+  from {
+    opacity: 0;
+    transform: scale(0.35, 0.12);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+/* Theme switch cross-fade (ModeToggle uses document.startViewTransition
+   where the browser supports it). */
+::view-transition-old(root),
+::view-transition-new(root) {
+  animation-duration: 450ms;
+  animation-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .page-glow {
+    animation: none;
+  }
+}
+
+/* Smooth scrolling for the nav and in-page links. Code that needs an exact
+   jump passes { behavior: "instant" } (see collapseProjects in page.tsx). */
+@media (prefers-reduced-motion: no-preference) {
+  html {
+    scroll-behavior: smooth;
+  }
+}
+
+/* Fade-in on scroll for elements with class `reveal`. Pure CSS
+   (scroll-driven animations), so there's no JavaScript and nothing stays
+   hidden if scripts are slow. Browsers without support, and visitors who
+   prefer reduced motion, just see the content. */
+@keyframes reveal-in {
+  from {
+    opacity: 0;
+    transform: translateY(24px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+@media (prefers-reduced-motion: no-preference) {
+  @supports (animation-timeline: view()) {
+    .reveal {
+      animation: reveal-in linear both;
+      /* must come after the `animation` shorthand, which resets it */
+      animation-timeline: view();
+      animation-range: entry 0% entry 40%;
+    }
   }
 }
 

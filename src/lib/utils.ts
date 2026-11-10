@@ -1,10 +1,16 @@
 import { clsx, type ClassValue } from "clsx";
 import { twMerge } from "tailwind-merge";
 import { marked } from "marked";
-import { PromiseReturnValue } from "./types";
+import { PromiseReturnValue, Skill } from "./types";
 
 export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs));
+}
+
+// skillicons.dev answers unknown ids with an empty 200 response, so skills it
+// doesn't have use their own tile in public/skills/ (`src`).
+export function skillIconSrc(skill: Skill) {
+  return skill.src ?? `https://skillicons.dev/icons?i=${skill.code}`;
 }
 
 export const cropPhoto = (imageUrl: string) => {

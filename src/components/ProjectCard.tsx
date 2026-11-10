@@ -1,14 +1,12 @@
 "use client";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Button } from "./ui/button";
-import Link from "next/link";
-import BoltIcon from "@mui/icons-material/Bolt";
-import CodeIcon from "@mui/icons-material/Code";
-import GetAppIcon from "@mui/icons-material/GetApp";
-import CloudDownloadIcon from "@mui/icons-material/CloudDownload";
+import { Tooltip } from "@mui/material";
+import { Download, Github, Zap } from "lucide-react";
 import React, { useEffect, useRef, useState } from "react";
 import YouTube, { YouTubeEvent, YouTubePlayer } from "react-youtube";
 import { Project } from "../lib/types";
+import { getProjectContent, skillIconSrc } from "../lib/utils";
+import { card } from "./styles";
 import {
   Dialog,
   DialogClose,
@@ -19,16 +17,56 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "./ui/dialog";
-import { getProjectContent } from "../lib/utils";
-import { Tooltip } from "@mui/material";
 
-function ProjectContent({ children, ...props }: { children: React.ReactNode }) {
+const buttonBase =
+  "inline-flex items-center justify-center gap-1.5 rounded-lg border px-3 py-2 text-sm transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-purple-500";
+const solidButton = `${buttonBase} border-transparent bg-zinc-900 text-white hover:bg-zinc-700 dark:bg-zinc-100 dark:text-zinc-900 dark:hover:bg-white`;
+const outlineButton = `${buttonBase} border-zinc-300 bg-white hover:border-zinc-500 dark:border-zinc-700 dark:bg-zinc-900 dark:hover:border-zinc-500`;
+
+function ProjectContent({ children }: { children: React.ReactNode }) {
   return (
     <div
-      className={`flex flex-col justify-between gap-1 border-[1px] border-zinc-500 rounded-lg text-center px-2 pt-2 pb-3 h-[348px] bg-zinc-200 dark:bg-black`}
+      className={`flex h-[348px] flex-col justify-between gap-1 px-2 pb-3 pt-2 text-center ${card}`}
     >
       {children}
     </div>
+  );
+}
+
+function LiveLink({ project, className }: { project: Project; className: string }) {
+  return (
+    <a
+      href={project.liveLink}
+      target="_blank"
+      rel="noopener noreferrer"
+      className={className}
+    >
+      {project.type === "mobile" ? (
+        <>
+          <Download aria-hidden className="h-4 w-4" />
+          Download APK
+        </>
+      ) : (
+        <>
+          <Zap aria-hidden className="h-4 w-4 text-orange-500" />
+          Live
+        </>
+      )}
+    </a>
+  );
+}
+
+function CodeLink({ project, className }: { project: Project; className: string }) {
+  return (
+    <a
+      href={project.codeLink}
+      target="_blank"
+      rel="noopener noreferrer"
+      className={className}
+    >
+      <Github aria-hidden className="h-4 w-4" />
+      Code
+    </a>
   );
 }
 
@@ -63,7 +101,7 @@ function ProjectThumbnail({ project }: { project: Project }) {
         {project.stack.map((skill) => (
           <img
             key={skill.code}
-            src={`https://skillicons.dev/icons?i=${skill.code}`}
+            src={skillIconSrc(skill)}
             alt=""
             className="h-10 w-10"
           />
@@ -83,6 +121,61 @@ function ProjectThumbnail({ project }: { project: Project }) {
   );
 }
 
+// Thumbnail, plus the demo video that fades in and plays while hovered.
+// Kept separate so the player ref lives and dies with this element (Radix
+// unmounts the tab when "About" is selected).
+function PreviewMedia({
+  project,
+  loadPlayer,
+}: {
+  project: Project;
+  loadPlayer: boolean;
+}) {
+  const [isHovering, setIsHovering] = useState(false);
+  // Set only in onReady, so it's never the React component or a half-made player.
+  const playerRef = useRef<YouTubePlayer | null>(null);
+  const hasPlayer = Boolean(project.youtubeVideoId) && loadPlayer;
+
+  return (
+    <div
+      className="relative overflow-hidden rounded-lg"
+      onMouseEnter={() => {
+        if (!hasPlayer) return;
+        setIsHovering(true);
+        playerRef.current?.playVideo();
+      }}
+      onMouseLeave={() => {
+        if (!hasPlayer) return;
+        setIsHovering(false);
+        playerRef.current?.pauseVideo();
+      }}
+    >
+      <ProjectThumbnail project={project} />
+      {hasPlayer && (
+        // Decorative preview: `inert` keeps the (usually invisible) iframe out
+        // of the tab order and away from screen readers. Set via ref because
+        // React 18 doesn't know the attribute.
+        <div
+          ref={(el) => el?.setAttribute("inert", "")}
+          className={`absolute inset-0 z-10 transition-opacity duration-700 ${
+            isHovering ? "opacity-100" : "opacity-0"
+          }`}
+        >
+          <YouTube
+            videoId={project.youtubeVideoId}
+            opts={{ height: "181", width: "100%" }}
+            onReady={(e: YouTubeEvent) => {
+              playerRef.current = e.target;
+            }}
+            className="h-full w-full"
+            iframeClassName="h-full w-full rounded-lg"
+          />
+        </div>
+      )}
+    </div>
+  );
+}
+
 export function ProjectDialogBox({ project }: { project: Project }) {
   const [projectContent, setProjectContent] = useState("");
 
@@ -93,182 +186,121 @@ export function ProjectDialogBox({ project }: { project: Project }) {
   }, []);
 
   return (
-    <React.Fragment>
+    <>
       <DialogHeader>
         <DialogTitle dangerouslySetInnerHTML={{ __html: project.title }} />
-        <DialogDescription
-          dangerouslySetInnerHTML={{ __html: project.about }}
-        />
+        <DialogDescription dangerouslySetInnerHTML={{ __html: project.about }} />
       </DialogHeader>
-      <div className="overflow-auto h-full max-h-[calc(100%-20px)] leading-7">
+      {/* The README scrolls; the header and buttons stay put. */}
+      <div className="min-h-0 flex-1 overflow-auto leading-7">
         <div
           dangerouslySetInnerHTML={{ __html: projectContent }}
           className="project-content"
         />
-        {/* <div>{projectContent}</div> */}
       </div>
-      <DialogFooter>
-        <div className="w-1/2 flex gap-3">
-          <Link href={project.liveLink} target="_blank" className="w-full">
-            <Button className="w-full font-bold bg-zinc-800 dark:bg-zinc-200">
-              {project.type === "web" && (
-                <>
-                  <p>Live</p>
-                  <BoltIcon className="text-orange-400" />
-                </>
-              )}
-              {project.type === "mobile" && (
-                <>
-                  <p>Download APK</p>&nbsp;
-                  <CloudDownloadIcon className="dark:text-zinc-600 text-zinc-300" />
-                </>
-              )}
-            </Button>
-          </Link>
-          <Link href={project.codeLink} target="_blank" className="w-full">
-            <Button className="w-full font-bold bg-zinc-800 dark:bg-zinc-200">
-              Code
-              <CodeIcon className="ml-1 text-blue-500" />
-            </Button>
-          </Link>
-          <DialogClose asChild>
-            <Button type="button" variant="secondary" className="w-full">
-              Close
-            </Button>
-          </DialogClose>
-        </div>
+      <DialogFooter className="flex-row flex-wrap justify-end gap-2 sm:space-x-0">
+        <LiveLink project={project} className={solidButton} />
+        <CodeLink project={project} className={outlineButton} />
+        <DialogClose asChild>
+          <button type="button" className={outlineButton}>
+            Close
+          </button>
+        </DialogClose>
       </DialogFooter>
-    </React.Fragment>
+    </>
   );
 }
 
 export default function ProjectCard({ project }: { project: Project }) {
-  const [isHovering, setIsHovering] = useState<boolean>(false);
-  const playerRef = useRef<YouTubePlayer | null>(null);
+  const [loadPlayer, setLoadPlayer] = useState(false);
+  const cardRef = useRef<HTMLDivElement | null>(null);
+
+  // Load the hover preview only once the card is near the screen, and only on
+  // devices that can hover: on touch screens it could never play anyway.
+  useEffect(() => {
+    const el = cardRef.current;
+    if (!project.youtubeVideoId || !el) return;
+    if (!window.matchMedia("(hover: hover) and (pointer: fine)").matches) return;
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        if (entry.isIntersecting) {
+          setLoadPlayer(true);
+          observer.disconnect();
+        }
+      },
+      { rootMargin: "300px 0px" }
+    );
+    observer.observe(el);
+    return () => observer.disconnect();
+  }, [project.youtubeVideoId]);
 
   return (
-    <>
-      <Tabs
-        defaultValue="preview"
-        className="w-[318px] flex flex-col justify-center"
-      >
-        <TabsList className="light:bg-zinc-200">
-          <TabsTrigger value="preview" className="w-full">
-            Preview
-          </TabsTrigger>
-          <TabsTrigger value="about" className="w-full">
-            About
-          </TabsTrigger>
-        </TabsList>
+    <Tabs
+      ref={cardRef}
+      defaultValue="preview"
+      // Fixed width so cards line up, but never wider than a narrow screen
+      className="flex w-[318px] max-w-full flex-col justify-center"
+    >
+      <TabsList>
+        <TabsTrigger value="preview" className="w-full">
+          Preview
+        </TabsTrigger>
+        <TabsTrigger value="about" className="w-full">
+          About
+        </TabsTrigger>
+      </TabsList>
 
-        <TabsContent value="preview">
-          <ProjectContent>
-            <div
-              className="relative rounded-lg overflow-hidden"
-              onMouseEnter={(e) => {
-                if (!project.youtubeVideoId) return;
-                setIsHovering(true);
-                playerRef.current?.playVideo();
-              }}
-              onMouseLeave={(e) => {
-                if (!project.youtubeVideoId) return;
-                setIsHovering(false);
-                playerRef.current?.pauseVideo();
-              }}
-            >
-              <ProjectThumbnail project={project} />
-              {project.youtubeVideoId && (
-                <YouTube
-                  videoId={project.youtubeVideoId}
-                  opts={{
-                    height: "181",
-                  }}
-                  onReady={(e: YouTubeEvent) => {
-                    playerRef.current = e.target;
-                  }}
-                  ref={playerRef}
-                  className={`absolute top-0 h-full object-cover rounded-lg z-10 ${
-                    isHovering ? "opacity-100" : "opacity-0"
-                  } transition-opacity duration-700`}
-                />
-              )}
+      <TabsContent value="preview">
+        <ProjectContent>
+          <PreviewMedia project={project} loadPlayer={loadPlayer} />
+          <div
+            className="text-lg opacity-80"
+            dangerouslySetInnerHTML={{ __html: project.title }}
+          />
+          <div className="space-y-2 px-2">
+            <div className="grid grid-cols-2 gap-2">
+              <LiveLink project={project} className={solidButton} />
+              <CodeLink project={project} className={outlineButton} />
             </div>
-            <div
-              className="text-lg opacity-80"
+            <Dialog>
+              <DialogTrigger asChild>
+                <button type="button" className={`${outlineButton} w-full`}>
+                  More details
+                </button>
+              </DialogTrigger>
+              <DialogContent className="flex max-h-[calc(100dvh-2rem)] w-[calc(100%-2rem)] max-w-4xl flex-col">
+                <ProjectDialogBox project={project} />
+              </DialogContent>
+            </Dialog>
+          </div>
+        </ProjectContent>
+      </TabsContent>
+
+      <TabsContent value="about" className="text-zinc-600 dark:text-zinc-400">
+        <ProjectContent>
+          <div className="flex h-full flex-col justify-between gap-2 py-1">
+            <p
               dangerouslySetInnerHTML={{ __html: project.title }}
+              className="px-1 text-xl"
             />
-            <div className="px-2 space-y-2">
-              <div className="flex w-full justify-between gap-2">
-                <Link
-                  href={project.liveLink}
-                  target="_blank"
-                  className="w-full"
-                >
-                  <Button className="w-full font-bold bg-zinc-800 dark:bg-zinc-200">
-                    {project.type === "web" && (
-                      <>
-                        <p>Live</p>
-                        <BoltIcon className="text-orange-400" />
-                      </>
-                    )}
-                    {project.type === "mobile" && (
-                      <>
-                        <p>Download APK</p>&nbsp;
-                        <CloudDownloadIcon className="dark:text-zinc-600 text-zinc-300" />
-                      </>
-                    )}
-                  </Button>
-                </Link>
-                <Link
-                  href={project.codeLink}
-                  target="_blank"
-                  className="w-full"
-                >
-                  <Button className="w-full font-bold bg-zinc-800 dark:bg-zinc-200">
-                    Code
-                    <CodeIcon className="ml-1 text-blue-500" />
-                  </Button>
-                </Link>
-              </div>
-              <Dialog>
-                <DialogTrigger asChild>
-                  <Button className="w-full font-bold bg-zinc-800 dark:bg-zinc-200">
-                    More Details
-                  </Button>
-                </DialogTrigger>
-                <DialogContent className="max-h-[calc(100%-50px)] max-w-[calc(100%-100px)] flex flex-col">
-                  <ProjectDialogBox project={project} />
-                </DialogContent>
-              </Dialog>
+            <p
+              dangerouslySetInnerHTML={{ __html: project.about }}
+              className="mb-2 mt-1 overflow-auto px-1"
+            />
+            <div className="flex flex-wrap justify-center gap-3">
+              {project.stack.map((skill) => (
+                <Tooltip title={skill.title} arrow placement="bottom" key={skill.code}>
+                  <img
+                    src={skillIconSrc(skill)}
+                    alt={skill.title}
+                    className="relative bottom-0 mb-2 h-8 opacity-90 dark:opacity-80"
+                  />
+                </Tooltip>
+              ))}
             </div>
-          </ProjectContent>
-        </TabsContent>
-
-        <TabsContent value="about" className="dark:text-zinc-400 text-zinc-600">
-          <ProjectContent>
-            <div className="h-full flex flex-col py-1 justify-between gap-2">
-              <p
-                dangerouslySetInnerHTML={{ __html: project.title }}
-                className="text-xl px-1"
-              />
-              <p
-                dangerouslySetInnerHTML={{ __html: project.about }}
-                className="mt-1 mb-2 overflow-auto px-1"
-              />
-              <div className="flex flex-wrap gap-3 justify-center">
-                {project.stack.map((skill, i) => (
-                  <Tooltip title={skill.title} arrow placement="bottom" key={i}>
-                    <img
-                      src={`https://skillicons.dev/icons?i=${skill.code}`}
-                      className="h-8 dark:opacity-80 opacity-90 relative bottom-0 mb-2"
-                    />
-                  </Tooltip>
-                ))}
-              </div>
-            </div>
-          </ProjectContent>
-        </TabsContent>
-      </Tabs>
-    </>
+          </div>
+        </ProjectContent>
+      </TabsContent>
+    </Tabs>
   );
 }

@@ -1,4 +1,17 @@
-import { Experience, Profile, Project, Skill } from "./types";
+import {
+  BlogPost,
+  CaseStudy,
+  Experience,
+  Profile,
+  Project,
+  Skill,
+  Testimonial,
+} from "./types";
+
+// Used for absolute URLs in link previews (metadataBase in layout.tsx).
+// bio.charan-mudiraj.top stopped resolving in Nov 2026; switch back here if
+// the custom domain is renewed.
+export const siteUrl = "https://portfolio-charan-mudirajs-projects.vercel.app";
 
 // Top-of-page intro. From "About Charan" in CLAUDE.md.
 export const profile: Profile = {
@@ -34,7 +47,148 @@ export const profile: Profile = {
     message:
       "Hi Charan, I came across your portfolio and would like to connect.",
   },
+  email: {
+    address: "r.charan.m.gm@gmail.com",
+    subject: "Reaching out from your portfolio",
+  },
 };
+
+// Real messages from Slack, supplied by Charan as screenshots on 2026-11-10.
+// Each message is word for word; some messages were left out, none reworded.
+// Rudra's message originally started with "Btw ", dropped at Charan's request.
+// Dates aren't shown because the screenshots don't include them.
+export const testimonials: Testimonial[] = [
+  {
+    messages: [
+      "I really like your thought process and your approach towards the problem. It doesn't matter you work on frontend or backend, you're going to be a really good engineer",
+    ],
+    highlight: "you're going to be a really good engineer",
+    source: "Slack",
+    name: "Rudra Gupta",
+    role: "Co-founder",
+    company: "GrowMeOrganic",
+    companyLink: "https://www.linkedin.com/company/growmeorganic/",
+    link: "https://www.linkedin.com/in/rudra-gupta-6381951a0/",
+  },
+  {
+    messages: [
+      "Great work",
+      "And in the last couple of weeks you are able to think about corner cases and failure scenarios, which will make this system quite stable.",
+      "Your logic for adding last updated time in trigger function makes sense as it will take care of all the updates",
+    ],
+    highlight: "able to think about corner cases and failure scenarios",
+    source: "Slack",
+    context: "On my fix for the dashboard's repeated Firestore reads",
+    name: "Akshay Megharaj",
+    role: "Co-founder",
+    company: "Wuri",
+    companyLink: "https://www.linkedin.com/company/wuri-ai/",
+    link: "https://www.linkedin.com/in/akshay-megharaj-aba3646/",
+  },
+  {
+    messages: [
+      "So congratulations on your first deployment",
+      "Great work last week",
+      "This was literally completed in one week only",
+    ],
+    highlight: "literally completed in one week only",
+    source: "Slack",
+    context:
+      "On the IFF24 submission site (form + landing page), built and shipped in my first week",
+    name: "Akshay Megharaj",
+    role: "Co-founder",
+    company: "Wuri",
+    companyLink: "https://www.linkedin.com/company/wuri-ai/",
+    link: "https://www.linkedin.com/in/akshay-megharaj-aba3646/",
+  },
+];
+
+// Drafted from the resume and the blog post; Charan to review. No numbers
+// unless Charan provides them.
+export const caseStudies: CaseStudy[] = [
+  {
+    id: "dependent-loaders",
+    title: "Child routes reading data their parent hadn't loaded yet",
+    context: "GrowMeOrganic · React Router",
+    problem:
+      "React Router runs the loaders of all matched routes at the same time. Some child loaders needed state that a parent loader sets, for example the signed-in user. On a fresh page load they read it before the parent's request had finished, and got null.",
+    challenge:
+      "The obvious fix is to run the loaders one after another. That works, but it turns every page load into a waterfall: the deeper the route, the longer the wait, even for loaders that don't depend on anything.",
+    approach: [
+      "Each route lists the loaders it depends on in its `handle`, e.g. `dependencies: [rootLoader]`.",
+      "A custom `dataStrategy` still starts every loader at once, but passes each dependent loader a promise for the parent loaders it listed.",
+      "The child loader awaits that promise before reading the shared state. Loaders without dependencies never wait, and on client-side navigations where the parent doesn't run again, there's nothing to wait for.",
+    ],
+    result:
+      "Child loaders always see the data they need, and pages still load their data in parallel. Each route declares its own dependencies instead of having them wired into the loaders.",
+    code: {
+      caption: "Simplified from the blog post",
+      snippet: `// The route declares what it depends on
+{ path: "user-profile/", loader: userProfileLoader,
+  handle: { dependencies: [rootLoader] } }
+
+// dataStrategy: start every loader, but hand
+// dependents their parents' promises
+promises.push(
+  match.resolve((callLoader) =>
+    callLoader(Promise.all(parentPromises)))
+);
+
+// The child loader waits only for what it needs
+async function userProfileLoader(args, parentsLoaded) {
+  await parentsLoaded;
+  const user = store.get(userAtom);
+  // ...
+}`,
+    },
+    link: {
+      label: "Read the full write-up",
+      href: "https://code-with-charan.hashnode.dev/handling-dependent-loaders-in-react-router-accessing-parent-loaders-promise-in-a-child-loader",
+    },
+  },
+  {
+    // From Charan's explanation and a screenshot of the Firestore data
+    // (writers/{date}/iff24-submissions/{id}), 2026-11-10.
+    id: "firestore-cache",
+    title: "A dashboard that kept re-reading data that never changed",
+    context: "Wuri (Y Combinator W24) · Firestore, Cloud Functions",
+    problem:
+      "Wuri's internal dashboard listed every IFF24 form submission from Firestore, grouped by day. Each time it opened, it read every past day's submissions again, even though older days almost never change. As the days added up, the reads went past Firebase's free limit and started costing money. The co-founder flagged the cost, and I worked out the fix on my own.",
+    challenge:
+      "Caching the old days would cut the reads, but a plain cache shows stale data as soon as an older submission is edited. The dashboard needed a cheap way to tell which days had actually changed, without reading their submissions.",
+    approach: [
+      "Gave each day's document (the parent of that day's `iff24-submissions` collection) a `lastModifiedTimestamp` field.",
+      "Wrote a Cloud Function trigger that sets it to the current time whenever a submission in that day's collection is created or updated.",
+      "The dashboard keeps each day's submissions in localStorage along with the timestamp it saw. On open it reads only the day documents, and fetches a day's submissions again only if its timestamp is newer than the cached one.",
+    ],
+    result:
+      "Unnecessary reads dropped significantly, and edits to older submissions still show up, so the dashboard never shows stale data.",
+    link: {
+      label: "What Wuri's co-founder said about it",
+      href: "#testimonials",
+    },
+  },
+];
+
+// From the blog's RSS feed (code-with-charan.hashnode.dev/rss.xml).
+export const blogPosts: BlogPost[] = [
+  {
+    title:
+      "Handling Dependent Loaders in React Router | Accessing Parent Loader's Promise in a Child Loader",
+    date: "Nov 2024",
+    href: "https://code-with-charan.hashnode.dev/handling-dependent-loaders-in-react-router-accessing-parent-loaders-promise-in-a-child-loader",
+    coverImage:
+      "https://cdn.hashnode.com/res/hashnode/image/upload/v1730419525646/ef04a3c9-9109-4a9e-88e0-c737b7545d79.png",
+  },
+  {
+    title:
+      "How to Build a Chat App / WhatsApp Clone (Technologies, Methods and Architecture)",
+    date: "Apr 2024",
+    href: "https://code-with-charan.hashnode.dev/how-to-build-a-chat-app",
+    coverImage:
+      "https://cdn.hashnode.com/res/hashnode/image/upload/v1714142124112/ab2e64ae-5ab9-452f-b097-de144660e3e2.png",
+  },
+];
 
 export const fallbackUserIdEncryptionKey = "123";
 
@@ -61,87 +215,59 @@ export const successMessages = {
   userFound: "User Found",
 };
 
+// The "Technologies" row, in this order. Every icon also filters the
+// projects; skills no project uses show "No projects to show" (Charan's
+// choice, 2026-11-10). Order and names follow the resume's Technical Skills,
+// then older skills Charan asked to keep. Keys are referenced by `projects`.
+// `src` = own tile in public/skills/ (skillicons.dev has no icon for these).
 export const skillIconsKeywords: Record<string, Skill> = {
-  javascript: {
-    code: "js",
-    title: "Javascript",
+  // Languages
+  javascript: { code: "js", title: "JavaScript" },
+  typescript: { code: "ts", title: "TypeScript" },
+  python: { code: "py", title: "Python" },
+  sql: { code: "sql", title: "SQL", src: "/skills/sql.svg" },
+  java: { code: "java", title: "Java" },
+  html: { code: "html", title: "HTML" },
+  css: { code: "css", title: "CSS" },
+  // Frontend
+  reactJS: { code: "react", title: "React" },
+  reactRouter: {
+    code: "reactrouter",
+    title: "React Router",
+    src: "/skills/reactrouter.svg",
   },
-  typescript: {
-    code: "ts",
-    title: "Typescript",
+  astro: { code: "astro", title: "Astro.js" },
+  nextJS: { code: "next", title: "Next.js" },
+  recoil: { code: "recoil", title: "Recoil", src: "/skills/recoil.svg" },
+  tailwindCss: { code: "tailwind", title: "Tailwind CSS" },
+  // Backend
+  django: { code: "django", title: "Django" },
+  restApis: { code: "rest", title: "REST APIs", src: "/skills/rest.svg" },
+  fastApi: { code: "fastapi", title: "FastAPI" },
+  nodeJS: { code: "nodejs", title: "Node.js" },
+  expressJS: { code: "expressjs", title: "Express.js" },
+  // Databases
+  postgres: { code: "postgres", title: "PostgreSQL" },
+  mongoDB: { code: "mongodb", title: "MongoDB" },
+  firebase: { code: "firebase", title: "Firebase (Firestore, Cloud Functions)" },
+  // Cloud & tools
+  aws: { code: "aws", title: "AWS (S3, EC2, CloudFront)" },
+  gcp: { code: "gcp", title: "Google Cloud Platform" },
+  git: { code: "git", title: "Git" },
+  github: { code: "github", title: "GitHub" },
+  claudeCode: {
+    code: "claude",
+    title: "Claude Code",
+    src: "/skills/claude.svg",
   },
-  firebase: {
-    code: "firebase",
-    title: "Firebase",
-  },
-  html: {
-    code: "html",
-    title: "HTML",
-  },
-  nodeJS: {
-    code: "nodejs",
-    title: "NodeJS",
-  },
-  reactJS: {
-    code: "react",
-    title: "ReactJS",
-  },
-  nectJS: {
-    code: "next",
-    title: "NextJS",
-  },
-  tailwindCss: {
-    code: "tailwind",
-    title: "Tailwind",
-  },
-  css: {
-    code: "css",
-    title: "CSS",
-  },
-  bootstrap: {
-    code: "bootstrap",
-    title: "Bootstrap",
-  },
-  expressJS: {
-    code: "expressjs",
-    title: "ExpressJS",
-  },
-  materialUI: {
-    code: "materialui",
-    title: "Material UI",
-  },
-  dart: {
-    code: "dart",
-    title: "Dart",
-  },
-  flutter: {
-    code: "flutter",
-    title: "Flutter",
-  },
-  mongoDB: {
-    code: "mongodb",
-    title: "MongoDB",
-  },
-  docker: {
-    code: "docker",
-    title: "Docker",
-  },
-  aws: {
-    code: "aws",
-    title: "AWS(Amazon Web Services)",
-  },
-  c: {
-    code: "c",
-    title: "C Language",
-  },
-  java: {
-    code: "java",
-    title: "Java",
-  },
-  photoshop: {
-    code: "ps",
-    title: "Adobe Photoshop",
-  },
+  // Older skills, kept at Charan's request
+  bootstrap: { code: "bootstrap", title: "Bootstrap" },
+  materialUI: { code: "materialui", title: "Material UI" },
+  dart: { code: "dart", title: "Dart" },
+  flutter: { code: "flutter", title: "Flutter" },
+  docker: { code: "docker", title: "Docker" },
+  c: { code: "c", title: "C" },
+  photoshop: { code: "ps", title: "Adobe Photoshop" },
 };
 
 // Newest first. Text is copied from "About Charan" in CLAUDE.md; keep the two in sync.
@@ -188,6 +314,19 @@ export const experience: Experience[] = [
         text: "Interviewed React intern candidates and co-led the intern team.",
       },
     ],
+    // From the highlights above (Python because Django is Python). Charan to
+    // confirm anything else he used here, e.g. TypeScript.
+    stack: [
+      skillIconsKeywords.reactJS,
+      skillIconsKeywords.reactRouter,
+      skillIconsKeywords.astro,
+      skillIconsKeywords.python,
+      skillIconsKeywords.django,
+      skillIconsKeywords.restApis,
+      skillIconsKeywords.postgres,
+      { ...skillIconsKeywords.aws, title: "AWS S3" },
+      skillIconsKeywords.claudeCode,
+    ],
   },
   {
     company: "Wuri",
@@ -208,6 +347,14 @@ export const experience: Experience[] = [
       {
         text: "Wrote Firebase Cloud Functions and the Firebase-to-MongoDB migration.",
       },
+    ],
+    // From the highlights above and the resume ("Cloud Functions on GCP").
+    stack: [
+      skillIconsKeywords.reactJS,
+      { ...skillIconsKeywords.firebase, title: "Firestore" },
+      { ...skillIconsKeywords.firebase, title: "Firebase Cloud Functions" },
+      skillIconsKeywords.gcp,
+      skillIconsKeywords.mongoDB,
     ],
   },
 ];

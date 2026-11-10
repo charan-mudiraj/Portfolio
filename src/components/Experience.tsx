@@ -1,5 +1,6 @@
 import { ArrowUpRight } from "lucide-react";
 import { experience } from "../lib/constants";
+import { skillIconSrc } from "../lib/utils";
 import {
   Experience as ExperienceEntry,
   ExperienceHighlight,
@@ -78,7 +79,7 @@ function Highlight({ highlight }: { highlight: ExperienceHighlight }) {
 
 function ExperienceCard({ entry }: { entry: ExperienceEntry }) {
   return (
-    <article className="rounded-lg border border-zinc-500 bg-zinc-200 p-4 dark:bg-black sm:p-6 lg:flex lg:gap-8">
+    <article className="reveal rounded-lg border border-zinc-500 bg-zinc-200 p-4 dark:bg-black sm:p-6 lg:flex lg:gap-8">
       <div className="lg:w-72 lg:shrink-0">
         <h3 className="text-lg">
           {entry.company}
@@ -87,6 +88,28 @@ function ExperienceCard({ entry }: { entry: ExperienceEntry }) {
           )}
         </h3>
         <RoleTimeline roles={entry.roles} />
+        {entry.stack && entry.stack.length > 0 && (
+          <div className="mt-5">
+            <p className={`text-xs uppercase tracking-wider ${mutedText}`}>
+              Tech used
+            </p>
+            <ul className="mt-2 flex flex-wrap gap-1.5">
+              {entry.stack.map((skill) => (
+                <li
+                  key={skill.title}
+                  className="inline-flex items-center gap-1.5 rounded-full border border-zinc-300 bg-white/70 py-0.5 pl-1 pr-2.5 text-xs dark:border-zinc-700 dark:bg-zinc-900/70"
+                >
+                  <img
+                    src={skillIconSrc(skill)}
+                    alt=""
+                    className="h-4 w-4 rounded-[3px]"
+                  />
+                  {skill.title}
+                </li>
+              ))}
+            </ul>
+          </div>
+        )}
       </div>
       <ul className="mt-5 list-disc space-y-2 pl-5 text-sm leading-6 text-zinc-700 marker:text-zinc-500 dark:text-zinc-300 lg:mt-0">
         {entry.highlights.map((highlight) => (
@@ -102,7 +125,7 @@ export function Experience() {
     <section
       id="experience"
       aria-labelledby="experience-heading"
-      className="w-full"
+      className="w-full scroll-mt-20"
     >
       <h2 id="experience-heading" className="text-2xl">
         Experience
