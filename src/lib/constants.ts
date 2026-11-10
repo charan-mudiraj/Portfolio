@@ -1,4 +1,28 @@
-import { Project, Skill } from "./types";
+import { Experience, Profile, Project, Skill } from "./types";
+
+// Top-of-page intro. From "About Charan" in CLAUDE.md.
+export const profile: Profile = {
+  name: "Charan Mudiraj",
+  tagline: "Full-stack developer",
+  location: "Hyderabad, India",
+  links: [
+    {
+      kind: "github",
+      label: "GitHub",
+      href: "https://github.com/Charan-Mudiraj",
+    },
+    {
+      kind: "linkedin",
+      label: "LinkedIn",
+      href: "https://www.linkedin.com/in/charan-mudiraj-868086230",
+    },
+    {
+      kind: "blog",
+      label: "Blog",
+      href: "https://code-with-charan.hashnode.dev",
+    },
+  ],
+};
 
 export const fallbackUserIdEncryptionKey = "123";
 
@@ -107,6 +131,74 @@ export const skillIconsKeywords: Record<string, Skill> = {
     title: "Adobe Photoshop",
   },
 };
+
+// Newest first. Text is copied from "About Charan" in CLAUDE.md; keep the two in sync.
+export const experience: Experience[] = [
+  {
+    company: "GrowMeOrganic",
+    roles: [
+      {
+        title: "Frontend Developer",
+        employmentType: "Full-time",
+        dates: "Sep 2025 – present",
+        note: "Has also worked on the Django backend since Jan 2026.",
+        isCurrent: true,
+      },
+      {
+        title: "Frontend Developer Intern",
+        dates: "Sep 2024 – Aug 2025",
+      },
+    ],
+    highlights: [
+      {
+        text: "Backend features in Django and PostgreSQL: reviewing UI designs, planning the architecture, writing DB migrations and REST APIs.",
+      },
+      {
+        text: "Led the project to build an internal tool that creates and maintains designs using Claude Code.",
+      },
+      {
+        text: "CSV upload and download that goes straight between the browser and S3, using presigned URLs.",
+      },
+      {
+        text: "Internal React tools for tracking revenue, subscriptions and users, built on the Django backend.",
+      },
+      {
+        text: "Pages, components and features for the main React app and the Astro.js marketing site.",
+      },
+      {
+        text: "A custom React Router dataStrategy that lets child loaders await their parent loader's promise",
+        link: {
+          label: "blog post",
+          href: "https://code-with-charan.hashnode.dev/handling-dependent-loaders-in-react-router-accessing-parent-loaders-promise-in-a-child-loader",
+        },
+      },
+      {
+        text: "Interviewed React intern candidates and co-led the intern team.",
+      },
+    ],
+  },
+  {
+    company: "Wuri",
+    companyNote: "Y Combinator W24",
+    roles: [
+      {
+        title: "Software Developer Intern",
+        dates: "Jun – Jul 2024",
+      },
+    ],
+    highlights: [
+      { text: "The only full-stack developer at the startup." },
+      {
+        text: "Built the IFF24 submission site (React, Firebase), which got 900+ submissions.",
+      },
+      { text: "Built the first company website from Figma designs." },
+      { text: "Built a Firestore admin dashboard." },
+      {
+        text: "Wrote Firebase Cloud Functions and the Firebase-to-MongoDB migration.",
+      },
+    ],
+  },
+];
 
 export const projects: Project[] = [
   {

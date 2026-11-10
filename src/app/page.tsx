@@ -1,32 +1,32 @@
 "use client";
-import { ModeToggle } from "../components/ModeToggle";
-import ProjectCard from "../components/ProjectCard";
-import { projects, skillIconsKeywords } from "../lib/constants";
 import { Tooltip } from "@mui/material";
 import { useAtom } from "jotai";
+import { Experience } from "../components/Experience";
+import { Hero } from "../components/Hero";
+import { ModeToggle } from "../components/ModeToggle";
+import ProjectCard from "../components/ProjectCard";
 import { skillsFilterAtom } from "../lib/atoms";
-import React, { useEffect, useRef, useState } from "react";
-import { DB } from "../firestore";
-import { doc, getDoc } from "firebase/firestore";
-import { Input } from "../components/ui/input";
-import { Button } from "../components/ui/button";
-import { Chat } from "../components/Chat";
+import { projects, skillIconsKeywords } from "../lib/constants";
 
-interface OnlineStatus {
-  isOnline: boolean;
-}
+// The online-status dot and the visitor chat widget are hidden for now. Their
+// code (components/Chat.tsx, lib/chat_utils.ts, firestore.tsx) is still in the
+// repo; CLAUDE.md ("How things work") explains how to turn them back on.
+
+const textLinkButton =
+  "text-sm text-purple-700 underline underline-offset-2 dark:text-primary-color";
 
 function SkillsIcons() {
   const [skillsFilter, setSkillsFilter] = useAtom(skillsFilterAtom);
 
   return (
-    <div className="flex flex-wrap gap-3 px-16 text-xl">
+    <div className="mt-5 flex flex-wrap gap-3 sm:px-5">
       {Object.values(skillIconsKeywords).map((skill, i) => (
         <Tooltip title={skill.title} arrow placement="top" key={i}>
           <img
             src={`https://skillicons.dev/icons?i=${skill.code}`}
-            className={`cursor-pointer active:duration-300 duration-150 active:scale-[0.85] ${
-              skillsFilter.includes(skill.code) && "opacity-50 scale-[0.85]"
+            alt={skill.title}
+            className={`h-12 w-12 cursor-pointer active:duration-300 duration-150 active:scale-[0.85] ${
+              skillsFilter.includes(skill.code) ? "opacity-50 scale-[0.85]" : ""
             }`}
             onClick={() =>
               setSkillsFilter((curr) => {
@@ -48,97 +48,71 @@ function SkillsIcons() {
 
 export default function Home() {
   const [skillsFilter, setSkillsFilter] = useAtom(skillsFilterAtom);
-  const [amIOnline, setAmIOnline] = useState(false);
+  const clearFilter = () => setSkillsFilter([]);
 
-  const getFilteredProjects = () => {
-    return projects.filter((pjt) =>
-      skillsFilter.length > 0
-        ? skillsFilter.every((skillCode) =>
-            pjt.stack.some((skill) => skill.code === skillCode)
-          )
-        : true
-    );
-  };
-
-  const filteredProjects = getFilteredProjects();
-
-  useEffect(() => {
-    const docRef = doc(DB, "background", "online-status");
-    getDoc(docRef)
-      .then((docSnap) => {
-        if (docSnap.exists()) {
-          const data = docSnap.data() as OnlineStatus;
-          if (data.isOnline) setAmIOnline(data.isOnline);
-        } else {
-          throw new Error("Failed to fetch online status");
-        }
-      })
-      .catch((err) => {
-        console.error(err);
-      });
-  }, []);
+  const filteredProjects = projects.filter((pjt) =>
+    skillsFilter.length > 0
+      ? skillsFilter.every((skillCode) =>
+          pjt.stack.some((skill) => skill.code === skillCode)
+        )
+      : true
+  );
 
   return (
-    <div className="flex flex-col items-center pb-6 px-16">
-      <div className="flex gap-2">
-        Online Status:{" "}
-        <div
-          className={`${
-            amIOnline ? "bg-green-500" : "bg-zinc-500"
-          } p-3 rounded-full`}
-        />
-      </div>
-
-      <div className="text-center mt-5 text-xl font-light font-mono">
-        <p>Hello There !</p>
-        <p>I'm Charan</p>
-      </div>
+    <div className="relative isolate">
+      {/* Decorative grid + glow behind the top of the page (globals.css) */}
+      <div aria-hidden className="page-backdrop" />
       <ModeToggle className="absolute top-5 right-5" />
-      <br />
-      <div className="w-full">
-        <div className="flex justify-between">
-          <p className="text-xl">
-            Technologies I've worked on:{" "}
-            <span className="text-zinc-500 text-sm">
-              (Click on icon to filter the below projects)
-            </span>
-          </p>
-          {skillsFilter.length > 0 && (
-            <p
-              className="underline text-primary-color cursor-pointer"
-              onClick={() => setSkillsFilter([])}
-            >
-              Clear
-            </p>
-          )}
-        </div>
-        <br />
-        <SkillsIcons />
-      </div>
-      <br />
-      <Chat />
-      <br />
-      <div className="w-full">
-        <p className="text-xl">Projects:</p>
-        <br />
-        <div className="px-5 flex flex-wrap gap-5 justify-evenly">
-          {filteredProjects.length > 0 ? (
-            filteredProjects.map((pjt, i) => (
-              <ProjectCard project={pjt} key={i} />
-            ))
-          ) : (
-            <p>
-              No projects to show on selected stack.{" "}
-              <span
-                className="underline text-primary-color cursor-pointer"
-                onClick={() => setSkillsFilter([])}
+
+      <main className="mx-auto flex max-w-7xl flex-col gap-16 px-4 pb-20 sm:px-8 lg:px-16">
+        <Hero />
+        <Experience />
+
+        <section aria-labelledby="skills-heading" className="w-full">
+          <div className="flex flex-wrap items-baseline justify-between gap-x-4 gap-y-1">
+            <h2 id="skills-heading" className="text-2xl">
+              Technologies I&apos;ve worked on
+            </h2>
+            {skillsFilter.length > 0 && (
+              <button
+                type="button"
+                onClick={clearFilter}
+                className={textLinkButton}
               >
-                Clear Filter
-              </span>
-            </p>
-          )}
-        </div>
-      </div>
+                Clear filter
+              </button>
+            )}
+          </div>
+          <p className="mt-1 text-sm text-zinc-600 dark:text-zinc-400">
+            Click an icon to filter the projects below.
+          </p>
+          <SkillsIcons />
+        </section>
+
+        <section aria-labelledby="projects-heading" className="w-full">
+          <h2 id="projects-heading" className="text-2xl">
+            Projects
+          </h2>
+          <div className="mt-6 flex flex-wrap justify-evenly gap-5 sm:px-5">
+            {filteredProjects.length > 0 ? (
+              filteredProjects.map((pjt) => (
+                <ProjectCard project={pjt} key={pjt.id} />
+              ))
+            ) : (
+              <p>
+                No projects to show on selected stack.{" "}
+                <button
+                  type="button"
+                  onClick={clearFilter}
+                  className={textLinkButton}
+                >
+                  Clear filter
+                </button>
+              </p>
+            )}
+          </div>
+        </section>
+      </main>
     </div>
   );
 }

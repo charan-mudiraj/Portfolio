@@ -29,6 +29,9 @@
     --chart-4: 43 74% 66%;
     --chart-5: 27 87% 67%;
     --radius: 0.5rem;
+    /* .page-backdrop */
+    --backdrop-grid: rgb(24 24 27 / 0.07);
+    --backdrop-glow: rgb(168 85 247 / 0.14);
   }
   .dark {
     --background: 240 10% 3.9%;
@@ -55,6 +58,8 @@
     --chart-3: 30 80% 55%;
     --chart-4: 280 65% 60%;
     --chart-5: 340 75% 55%;
+    --backdrop-grid: rgb(255 255 255 / 0.05);
+    --backdrop-glow: rgb(168 85 247 / 0.2);
   }
   ::-webkit-scrollbar {
     width: 5px;
@@ -78,7 +83,7 @@
     font-weight: bold;
   }
   .project-content p,
-  li {
+  .project-content li {
     opacity: 80%;
     padding-left: 20px;
   }
@@ -87,6 +92,41 @@
     margin: 5px 0;
   }
 }
+@layer components {
+  /* Faint grid with a purple glow behind the top of the page. Sits behind the
+     page content (z-index -1 inside page.tsx's `isolate` wrapper) and fades
+     out towards the sides and bottom. Colours come from --backdrop-* above. */
+  .page-backdrop {
+    position: absolute;
+    inset: 0 0 auto 0;
+    height: 760px;
+    z-index: -1;
+    pointer-events: none;
+    background-image: radial-gradient(
+        ellipse 55% 60% at 50% 0%,
+        var(--backdrop-glow),
+        transparent 70%
+      ),
+      linear-gradient(to right, var(--backdrop-grid) 1px, transparent 1px),
+      linear-gradient(to bottom, var(--backdrop-grid) 1px, transparent 1px);
+    background-size:
+      100% 100%,
+      48px 48px,
+      48px 48px;
+    background-position: center top;
+    -webkit-mask-image: radial-gradient(
+      ellipse 75% 100% at 50% 0%,
+      black 35%,
+      transparent 80%
+    );
+    mask-image: radial-gradient(
+      ellipse 75% 100% at 50% 0%,
+      black 35%,
+      transparent 80%
+    );
+  }
+}
+
 @layer base {
   * {
     @apply border-border;

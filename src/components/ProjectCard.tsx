@@ -32,6 +32,57 @@ function ProjectContent({ children, ...props }: { children: React.ReactNode }) {
   );
 }
 
+// Firebase Storage currently returns 402 for every thumbnail (see the roadmap in
+// CLAUDE.md). Until the images move to public/, try `imgSrc`, then the demo
+// video's YouTube thumbnail, then fall back to the project's stack icons.
+function ProjectThumbnail({ project }: { project: Project }) {
+  const sources = [
+    project.imgSrc,
+    project.youtubeVideoId
+      ? `https://i.ytimg.com/vi/${project.youtubeVideoId}/hqdefault.jpg`
+      : "",
+  ].filter(Boolean);
+  const [sourceIndex, setSourceIndex] = useState(0);
+  const imgRef = useRef<HTMLImageElement | null>(null);
+
+  // Only advance past the source that actually failed, so a duplicate error
+  // report can't skip a fallback.
+  const markFailed = (index: number) =>
+    setSourceIndex((curr) => (curr === index ? index + 1 : curr));
+
+  // The first image starts loading from the server-rendered HTML and can fail
+  // before React attaches onError, so check it once after mount as well.
+  useEffect(() => {
+    const img = imgRef.current;
+    if (img && img.complete && img.naturalWidth === 0) markFailed(0);
+  }, []);
+
+  if (sourceIndex >= sources.length) {
+    return (
+      <div className="flex h-[181px] w-full items-center justify-center gap-3 rounded-lg bg-gradient-to-br from-zinc-300 to-zinc-100 dark:from-zinc-800 dark:to-zinc-950">
+        {project.stack.map((skill) => (
+          <img
+            key={skill.code}
+            src={`https://skillicons.dev/icons?i=${skill.code}`}
+            alt=""
+            className="h-10 w-10"
+          />
+        ))}
+      </div>
+    );
+  }
+
+  return (
+    <img
+      ref={imgRef}
+      src={sources[sourceIndex]}
+      alt=""
+      onError={() => markFailed(sourceIndex)}
+      className="h-[181px] w-full rounded-lg object-cover"
+    />
+  );
+}
+
 export function ProjectDialogBox({ project }: { project: Project }) {
   const [projectContent, setProjectContent] = useState("");
 
@@ -125,10 +176,7 @@ export default function ProjectCard({ project }: { project: Project }) {
                 playerRef.current?.pauseVideo();
               }}
             >
-              <img
-                src={project.imgSrc}
-                className={`rounded-lg aspect-video object-cover h-[181px]`}
-              />
+              <ProjectThumbnail project={project} />
               {project.youtubeVideoId && (
                 <YouTube
                   videoId={project.youtubeVideoId}
