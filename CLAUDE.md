@@ -43,6 +43,8 @@ Links:
 - GitHub: github.com/Charan-Mudiraj
 - LinkedIn: linkedin.com/in/charan-mudiraj-868086230
 - Blog: code-with-charan.hashnode.dev, with posts on the React Router fix and on building the Chat App.
+- WhatsApp: +91 79932 92606, linked as `wa.me/917993292606`.
+- Resume: `public/Charan_Mudiraj_Resume.pdf`. Charan supplies it, and its titles and dates match "Experience" above as of 2026-11-10.
 
 Rules for content:
 
@@ -54,17 +56,18 @@ Rules for content:
 
 The home page has:
 
-- a header ("Hello there! I'm" + name, tagline, location, and GitHub, LinkedIn and Blog links) over a faint grid-and-glow background;
+- a header over a faint grid-and-glow background: "Hello there! I'm" + name, tagline and location; "View resume" and "Download" buttons; and GitHub, LinkedIn, Blog and WhatsApp links;
 - an Experience section (GrowMeOrganic and Wuri);
 - skill icons that filter the project grid;
-- 11 project cards.
+- 11 project cards;
+- a light/dark toggle pinned to the top-right corner. The theme follows the browser/OS setting until the visitor picks one, and that choice is saved in localStorage under `theme`.
 
 The online-status dot and the visitor chat widget have been hidden since 2026-11-10, to keep the site simple. Their code is still in the repo; see "How things work".
 
 These parts are out of date compared with the profile above:
 
 - `metadata.description` in `src/app/layout.tsx` still says "MERN stack and Next.js ... multiple internship experiences".
-- There's no about, resume or contact section. The header links to GitHub, LinkedIn and the blog.
+- There's no about or contact section. The header has the resume and the GitHub, LinkedIn, blog and WhatsApp links.
 - The skill icons (`skillIconsKeywords` in `src/lib/constants.ts`) are missing Python, Django, PostgreSQL, Astro and React Router.
 - All the projects are from before the job. Chat App and Get JSON are the two Charan lists on the resume. The rest are clones and take-home assignments.
 - It was built desktop-first (fixed 318px cards, the "More Details" dialog) and the project cards haven't been checked on mobile. The page padding and the skills row are now responsive, and the header and Experience section have been checked at 360px.
@@ -86,9 +89,11 @@ These are in priority order. Tick an item off when it's done, and add new items 
   - Add skill icons for Python, Django, PostgreSQL, Astro and React Router. Check that each icon id exists on skillicons.dev first.
   - The skill icons also filter the projects, so a skill that no project uses shows "No projects to show". Decide with Charan how to handle that, for example a separate non-filtering skills list.
   - Rewrite `metadata.description` in `src/app/layout.tsx` to match the current profile.
-- [ ] **Resume download button.**
-  - Charan provides the current PDF. Put it in `public/` and link to it near the greeting at the top of the page.
-  - Replace the PDF whenever the resume changes, and don't edit its contents here.
+- [x] **Resume: view and download.**
+  - The PDF is `public/Charan_Mudiraj_Resume.pdf`, served by Vercel's CDN rather than S3. "View resume" opens it in the browser's built-in PDF viewer. "Download" uses the `download` attribute, which only works for same-origin files.
+  - Replace the PDF whenever the resume changes, keeping the same file name, and don't edit its contents here.
+- [x] **WhatsApp link.**
+  - A `wa.me` link in the header, with the pre-filled message "Hi Charan, I came across your portfolio and would like to connect." Both the number and the message are in `profile.whatsapp`.
 - [ ] **Mobile layout.**
   - Make the page work down to about 360px wide.
   - Known problem spots:
@@ -106,6 +111,7 @@ These are in priority order. Tick an item off when it's done, and add new items 
 - State: Jotai.
 - Data: `marked` for project READMEs. Firebase (Firestore) is only used by the hidden online-status and chat features, so it isn't in the page bundle right now.
 - There is no backend of its own. The hidden features talk to Firestore from the browser.
+- Hosting: Vercel, building `main` from github.com/charan-mudiraj/Portfolio. The Node.js version comes from the Vercel project settings, since `package.json` has no `engines` field. Vercel discontinued 20.x in 2026, and builds on it fail right after cloning, so use 26.x. The build has been checked on Node 24 (local) and 26.
 
 ## Commands
 
@@ -139,7 +145,7 @@ NEXT_PUBLIC_USERID_ENCRYPTION_KEY
 
 ```
 src/app/page.tsx                Home page; the whole page is a client component
-src/app/layout.tsx              Font (Poppins 300), metadata, theme provider (dark by default)
+src/app/layout.tsx              Font (Poppins 300), metadata, theme provider (follows the OS theme until the visitor picks one)
 src/app/globals.css             Theme variables, .page-backdrop (grid + glow), README styles
 src/app/admin/chat/page.tsx     Placeholder ("My Chat"); there is no admin chat UI yet
 src/components/Hero.tsx         Top-of-page header (name, tagline, location, links)
@@ -161,7 +167,7 @@ src/firestore.tsx               Firebase init; exports DB (and DBStorage, which 
 - Thumbnails live in the Firebase Storage bucket `portfolio-4c137`, which currently returns 402 (see the roadmap). `ProjectThumbnail` falls back to `https://i.ytimg.com/vi/<youtubeVideoId>/hqdefault.jpg`, then to the stack icons.
 - "More Details" fetches the repo's README.md from raw.githubusercontent.com, trying `main` first and then `master`. It converts the README with `marked` and rewrites `./` image paths to absolute URLs.
 
-**Header.** `profile` in `src/lib/constants.ts` holds the name, tagline ("Full-stack developer", from the first line of "About Charan"), location and links. `Hero.tsx` renders it.
+**Header.** `profile` in `src/lib/constants.ts` holds the name, tagline ("Full-stack developer", from the first line of "About Charan"), location and links, plus optional `resume` and `whatsapp` fields. `Hero.tsx` renders it, and each optional button only appears once its field is set. On phones the social links shrink to 44px icon-only buttons so they fit on one row.
 
 **Experience.**
 

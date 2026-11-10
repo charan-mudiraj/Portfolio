@@ -22,6 +22,18 @@ export const profile: Profile = {
       href: "https://code-with-charan.hashnode.dev",
     },
   ],
+  // To update the resume, replace public/Charan_Mudiraj_Resume.pdf and keep
+  // the same file name.
+  resume: {
+    href: "/Charan_Mudiraj_Resume.pdf",
+    fileName: "Charan_Mudiraj_Resume.pdf",
+  },
+  // Country code + number, digits only (no "+", spaces or dashes).
+  whatsapp: {
+    number: "917993292606",
+    message:
+      "Hi Charan, I came across your portfolio and would like to connect.",
+  },
 };
 
 export const fallbackUserIdEncryptionKey = "123";

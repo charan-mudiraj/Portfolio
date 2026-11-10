@@ -62,7 +62,7 @@ export default function Home() {
     <div className="relative isolate">
       {/* Decorative grid + glow behind the top of the page (globals.css) */}
       <div aria-hidden className="page-backdrop" />
-      <ModeToggle className="absolute top-5 right-5" />
+      <ModeToggle className="fixed top-4 right-4 z-50 sm:top-5 sm:right-5" />
 
       <main className="mx-auto flex max-w-7xl flex-col gap-16 px-4 pb-20 sm:px-8 lg:px-16">
         <Hero />

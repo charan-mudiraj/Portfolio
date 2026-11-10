@@ -17,11 +17,15 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en">
+    // suppressHydrationWarning: next-themes sets the theme class on <html>
+    // before React hydrates, so its attributes differ from the server HTML.
+    <html lang="en" suppressHydrationWarning>
       <body className={inter.className}>
+        {/* Follows the browser/OS theme until the visitor picks one with the
+            toggle; that choice is saved in localStorage ("theme"). */}
         <ThemeProvider
           attribute="class"
-          defaultTheme="dark"
+          defaultTheme="system"
           enableSystem
           disableTransitionOnChange
         >

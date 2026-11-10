@@ -16,7 +16,7 @@ export interface Project {
   stack: Skill[];
 }
 export interface ProfileLink {
-  kind: "github" | "linkedin" | "blog"; // picks the icon in Hero.tsx
+  kind: "github" | "linkedin" | "blog" | "whatsapp"; // picks the icon in Hero.tsx
   label: string;
   href: string;
 }
@@ -26,6 +26,15 @@ export interface Profile {
   tagline: string;
   location: string;
   links: ProfileLink[];
+  // Optional: each button stays hidden until its field is filled in.
+  resume?: {
+    href: string; // a file in public/, e.g. "/Charan-Mudiraj-Resume.pdf"
+    fileName: string; // name the browser saves it as
+  };
+  whatsapp?: {
+    number: string; // country code + number, digits only, e.g. "91XXXXXXXXXX"
+    message: string; // pre-filled chat text; the visitor can edit it before sending
+  };
 }
 
 // Experience entries. Titles and dates must match the offer/experience
