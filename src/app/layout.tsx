@@ -7,9 +7,9 @@ import { siteUrl } from "../lib/constants";
 
 const inter = Poppins({ subsets: ["latin"], weight: "300" });
 
-const title = "Charan Mudiraj · Full-stack developer";
+const title = "Charan Mudiraj · Full-stack engineer";
 const description =
-  "Charan Mudiraj is a full-stack developer in Hyderabad, India, building production web apps with React, TypeScript, Django and PostgreSQL at GrowMeOrganic.";
+  "Charan Mudiraj is a full-stack engineer in Hyderabad, India, building production web apps with React, TypeScript, Django and PostgreSQL at GrowMeOrganic.";
 
 // The preview image itself comes from opengraph-image.tsx.
 export const metadata: Metadata = {

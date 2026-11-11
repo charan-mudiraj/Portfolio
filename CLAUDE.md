@@ -6,23 +6,27 @@ The code was written in Sep 2024 – Feb 2025, before Charan's first full-time r
 
 ## About Charan (source of truth for site content)
 
-Full-stack developer in Hyderabad, India. B.Tech CSE, AVN Institute of Engineering and Technology (2021 – 2025).
+Full-stack engineer in Hyderabad, India (Charan's wording for the site header, 2026-11-11; the resume says "Full-stack developer"). B.Tech CSE, AVN Institute of Engineering and Technology (2021 – 2025).
 
-Experience. These titles and dates match the offer and experience letters, so use them exactly:
+Experience. The dates match the offer and experience letters, so use them exactly. The titles match too, with one exception noted below:
 
 - **GrowMeOrganic**
-  - Frontend Developer, full-time, Sep 2025 – present. Has also worked on the Django backend since Jan 2026.
+  - Full Stack Engineer, full-time, Sep 2025 – present. Has also worked on the Django backend since Jan 2026.
+    - The offer letter and the resume say "Frontend Developer". On 2026-11-11 Charan chose to show "Full Stack Engineer" on the site, after being told that background checks compare titles against the letters and that the linked resume says otherwise. Don't change it back without asking him.
   - Frontend Developer Intern, Sep 2024 – Aug 2025.
+  - Tech used (Charan, 2026-11-11): React, React Router, Astro.js, Lottie, Django, Celery, REST APIs, PostgreSQL, Stripe, Docker, AWS S3, Claude Code. No Python chip; Charan said Django is enough.
   - Work done there:
     - Backend features in Django and PostgreSQL: reviewing UI designs, planning the architecture, writing DB migrations and REST APIs.
     - Led the project to build an internal tool that creates and maintains designs using Claude Code.
     - CSV upload and download that goes straight between the browser and S3, using presigned URLs.
+    - A script that generates CSV files from JSON data (added by Charan 2026-11-11; no further detail given yet).
     - Internal React tools for tracking revenue, subscriptions and users, built on the Django backend.
     - Pages, components and features for the main React app and the Astro.js marketing site.
     - A custom React Router `dataStrategy` that lets child loaders await their parent loader's promise ([blog post](https://code-with-charan.hashnode.dev/handling-dependent-loaders-in-react-router-accessing-parent-loaders-promise-in-a-child-loader)).
     - Interviewed React intern candidates and co-led the intern team.
 - **Wuri (Y Combinator W24)**
   - Software Developer Intern, Jun – Jul 2024.
+  - Tech used: React, Tailwind CSS, Node.js (both added by Charan 2026-11-11), Firestore, Firebase Cloud Functions, Google Cloud Platform, MongoDB.
   - Work done there:
     - The only full-stack developer at the startup.
     - Built the IFF24 submission site (React, Firebase), which got 900+ submissions.
@@ -39,7 +43,8 @@ These match the "Technical Skills" section of the resume (`public/Charan_Mudiraj
 - **Backend:** Django, REST APIs, FastAPI, Node.js, Express.js, Firebase Cloud Functions
 - **Databases:** PostgreSQL, MongoDB, Firebase Firestore
 - **Cloud & tools:** AWS (S3, EC2, CloudFront), Google Cloud Platform, Git, GitHub, Claude Code
-- **On the site but not on the resume (Charan asked to keep them):** Bootstrap, Material UI, Dart, Flutter, Docker, C, Adobe Photoshop.
+- **Used at GrowMeOrganic, not on the resume (Charan, 2026-11-11):** Lottie, Celery, Stripe, Docker.
+- **On the site but not on the resume (Charan asked to keep them):** Bootstrap, Material UI, Dart, Flutter, C, Adobe Photoshop.
 
 Links:
 
@@ -48,12 +53,12 @@ Links:
 - Blog: code-with-charan.hashnode.dev, with posts on the React Router fix and on building the Chat App.
 - WhatsApp: +91 79932 92606, linked as `wa.me/917993292606`.
 - Email: r.charan.m.gm@gmail.com (from the resume; Charan asked for an "Email me" button on 2026-11-10).
-- Resume: `public/Charan_Mudiraj_Resume.pdf`. Charan supplies it, and its titles and dates match "Experience" above as of 2026-11-10.
+- Resume: `public/Charan_Mudiraj_Resume.pdf`. Charan supplies it. Its dates match "Experience" above, but it still titles the current role "Frontend Developer" (see the exception above).
 
 Rules for content:
 
 - Don't invent metrics, user counts, team sizes or achievements. If a piece of copy needs a number, ask Charan.
-- Don't upgrade job titles (for example to "Full Stack Engineer") and don't add other employers. Background checks compare them against the letters.
+- Don't upgrade job titles and don't add other employers. Background checks compare them against the letters. The only exception is the current GrowMeOrganic title, which Charan chose deliberately (see above); for any other title change, point out the risk and ask him first.
 - If Charan gives newer details, they win over this section. Update the section to match.
 
 ## Where the site is now
@@ -65,7 +70,7 @@ The home page has:
 - an Experience section (GrowMeOrganic and Wuri);
 - "What people I've worked with say": three real Slack messages, one from Rudra Gupta (co-founder, GrowMeOrganic) and two from Akshay Megharaj (co-founder, Wuri);
 - "Problems I've solved": two case studies (React Router dependent loaders, Wuri dashboard read caching), each with a diagram. The first is interactive;
-- 33 skill icons (the resume's skills plus the older ones), each of which filters the project grid;
+- 36 skill icons (the resume's skills, plus Lottie, Celery and Stripe from GrowMeOrganic, plus the older ones), each of which filters the project grid;
 - 11 project cards. The first 3 show, and a "View more" button reveals the rest;
 - "Writing": cards for the two Hashnode posts;
 - "Get in touch": email (with a copy button), WhatsApp and LinkedIn;
@@ -110,7 +115,7 @@ These are in priority order. Tick an item off when it's done, and add new items 
 - [x] **Update skills.** Done 2026-11-10.
   - The skills row now has every skill on the resume, plus the older ones Charan kept.
   - Charan chose to keep a single clickable row. Skills no project uses (Django, PostgreSQL, Python and others) show "No projects to show" when clicked.
-  - Five skills have no skillicons.dev icon and use local tiles in `public/skills/`: SQL, React Router, Recoil, REST APIs and Claude Code.
+  - Eight skills have no skillicons.dev icon and use local tiles in `public/skills/`: SQL, React Router, Recoil, REST APIs, Claude Code, Lottie, Celery and Stripe.
   - `metadata.description` in `layout.tsx` matches the current profile.
 - [x] **Link previews, Writing, Contact, scroll fade-in.** Done 2026-11-10; see "How things work".
 - [x] **Resume: view and download.**
@@ -118,9 +123,9 @@ These are in priority order. Tick an item off when it's done, and add new items 
   - Replace the PDF whenever the resume changes, keeping the same file name, and don't edit its contents here.
 - [x] **WhatsApp link.**
   - A `wa.me` link in the header, with the pre-filled message "Hi Charan, I came across your portfolio and would like to connect." Both the number and the message are in `profile.whatsapp`.
-- [ ] **Tech per company: Charan to confirm.**
-  - Each Experience card has a "Tech used" row (`stack` in `experience`). It's filled only from what the highlights state, plus Python because Django is Python.
-  - Charan to add anything else he used at each company, such as TypeScript or Tailwind at GrowMeOrganic, or Node.js for the Cloud Functions at Wuri.
+- [x] **Tech per company.** Done 2026-11-11.
+  - Each Experience card has a "Tech used" row (`stack` in `experience`). The lists are under "About Charan" and are now Charan-confirmed.
+- [ ] **JSON-to-CSV bullet: Charan to add context.** The GrowMeOrganic bullet "A script that generates CSV files from JSON data." is minimal because no other detail was given. Ask what data it converted and who used it.
 - [x] **Mobile layout.** Done 2026-11-10: the whole page works at 360px.
   - Project cards are `w-[318px] max-w-full`.
   - The "More details" dialog is `w-[calc(100%-2rem)] max-w-4xl`, capped at screen height, with the README scrolling and the buttons wrapping.
@@ -207,7 +212,7 @@ src/firestore.tsx               Firebase init; exports DB (and DBStorage, which 
 - Only the first `INITIAL_PROJECT_COUNT` (3) projects render until "View more" is clicked. The limit applies after the skill filter, so the button only shows when more than 3 projects match. "Show fewer" jumps back to the Projects heading if it's above the screen. Hidden cards aren't mounted, so their YouTube players don't load until needed.
 - "More Details" fetches the repo's README.md from raw.githubusercontent.com, trying `main` first and then `master`. It converts the README with `marked` and rewrites `./` image paths to absolute URLs.
 
-**Header.** `profile` in `src/lib/constants.ts` holds the name, tagline ("Full-stack developer", from the first line of "About Charan"), location and links, plus optional `resume`, `whatsapp` and `email` fields. `Hero.tsx` renders it, and each optional button only appears once its field is set. On phones the social links shrink to 44px icon-only buttons so they fit on one row.
+**Header.** `profile` in `src/lib/constants.ts` holds the name, tagline ("Full-stack engineer", from the first line of "About Charan"; it also feeds the page title and the link-preview image), location and links, plus optional `resume`, `whatsapp` and `email` fields. `Hero.tsx` renders it, and each optional button only appears once its field is set. On phones the social links shrink to 44px icon-only buttons so they fit on one row.
 
 **Testimonials.**
 
@@ -271,7 +276,7 @@ src/firestore.tsx               Firebase init; exports DB (and DBStorage, which 
 - When no project matches, the empty state checks each company's `stack` in `experience`. If a company used every selected skill, it says so ("At GrowMeOrganic I've worked with AWS S3", using the chip's own title) and links to Experience.
 - Icons come from `skillIconSrc()` in `lib/utils.ts`: `https://skillicons.dev/icons?i=<code>`, or the skill's `src` if it has one.
 - skillicons.dev answers an unknown id with HTTP 200 and an empty 256-byte SVG, so check a new id's response size, not its status.
-- The tiles in `public/skills/` copy skillicons' style: a 256×256 rounded square, `rx=60`, fill `#242938`, with the glyph centred. React Router, Recoil and Claude use Simple Icons logos (CC0, v13.21.0) in brand colours; SQL and REST APIs use lucide's `database` and `braces` glyphs in white.
+- The tiles in `public/skills/` copy skillicons' style: a 256×256 rounded square, `rx=60`, fill `#242938`, with the glyph centred. React Router, Recoil, Claude, Celery and Stripe use Simple Icons logos (CC0, v13.21.0) in brand colours. SQL, REST APIs and Lottie use lucide's `database`, `braces` and `sparkles` glyphs in white; Simple Icons no longer has a LottieFiles logo.
 
 **Hidden: online status and visitor chat.** Neither is rendered, and nothing imports `Chat.tsx` or `firestore.tsx`. To bring them back:
 

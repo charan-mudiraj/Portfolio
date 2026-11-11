@@ -16,7 +16,7 @@ export const siteUrl = "https://portfolio-charan-mudirajs-projects.vercel.app";
 // Top-of-page intro. From "About Charan" in CLAUDE.md.
 export const profile: Profile = {
   name: "Charan Mudiraj",
-  tagline: "Full-stack developer",
+  tagline: "Full-stack engineer", // Charan's wording, 2026-11-11
   location: "Hyderabad, India",
   links: [
     {
@@ -218,7 +218,9 @@ export const successMessages = {
 // The "Technologies" row, in this order. Every icon also filters the
 // projects; skills no project uses show "No projects to show" (Charan's
 // choice, 2026-11-10). Order and names follow the resume's Technical Skills,
-// then older skills Charan asked to keep. Keys are referenced by `projects`.
+// plus Lottie, Celery, Stripe and Docker (used at GrowMeOrganic, added by
+// Charan 2026-11-11), then older skills Charan asked to keep. Keys are
+// referenced by `projects` and `experience`.
 // `src` = own tile in public/skills/ (skillicons.dev has no icon for these).
 export const skillIconsKeywords: Record<string, Skill> = {
   // Languages
@@ -240,12 +242,15 @@ export const skillIconsKeywords: Record<string, Skill> = {
   nextJS: { code: "next", title: "Next.js" },
   recoil: { code: "recoil", title: "Recoil", src: "/skills/recoil.svg" },
   tailwindCss: { code: "tailwind", title: "Tailwind CSS" },
+  lottie: { code: "lottie", title: "Lottie", src: "/skills/lottie.svg" },
   // Backend
   django: { code: "django", title: "Django" },
+  celery: { code: "celery", title: "Celery", src: "/skills/celery.svg" },
   restApis: { code: "rest", title: "REST APIs", src: "/skills/rest.svg" },
   fastApi: { code: "fastapi", title: "FastAPI" },
   nodeJS: { code: "nodejs", title: "Node.js" },
   expressJS: { code: "expressjs", title: "Express.js" },
+  stripe: { code: "stripe", title: "Stripe", src: "/skills/stripe.svg" },
   // Databases
   postgres: { code: "postgres", title: "PostgreSQL" },
   mongoDB: { code: "mongodb", title: "MongoDB" },
@@ -253,6 +258,7 @@ export const skillIconsKeywords: Record<string, Skill> = {
   // Cloud & tools
   aws: { code: "aws", title: "AWS (S3, EC2, CloudFront)" },
   gcp: { code: "gcp", title: "Google Cloud Platform" },
+  docker: { code: "docker", title: "Docker" },
   git: { code: "git", title: "Git" },
   github: { code: "github", title: "GitHub" },
   claudeCode: {
@@ -265,7 +271,6 @@ export const skillIconsKeywords: Record<string, Skill> = {
   materialUI: { code: "materialui", title: "Material UI" },
   dart: { code: "dart", title: "Dart" },
   flutter: { code: "flutter", title: "Flutter" },
-  docker: { code: "docker", title: "Docker" },
   c: { code: "c", title: "C" },
   photoshop: { code: "ps", title: "Adobe Photoshop" },
 };
@@ -276,7 +281,9 @@ export const experience: Experience[] = [
     company: "GrowMeOrganic",
     roles: [
       {
-        title: "Frontend Developer",
+        // Charan's choice (2026-11-11), knowing his offer letter and resume say
+        // "Frontend Developer". Don't change it back without asking him.
+        title: "Full Stack Engineer",
         employmentType: "Full-time",
         dates: "Sep 2025 – present",
         note: "Has also worked on the Django backend since Jan 2026.",
@@ -298,6 +305,10 @@ export const experience: Experience[] = [
         text: "CSV upload and download that goes straight between the browser and S3, using presigned URLs.",
       },
       {
+        // Added by Charan 2026-11-11; more context welcome.
+        text: "A script that generates CSV files from JSON data.",
+      },
+      {
         text: "Internal React tools for tracking revenue, subscriptions and users, built on the Django backend.",
       },
       {
@@ -314,16 +325,19 @@ export const experience: Experience[] = [
         text: "Interviewed React intern candidates and co-led the intern team.",
       },
     ],
-    // From the highlights above (Python because Django is Python). Charan to
-    // confirm anything else he used here, e.g. TypeScript.
+    // From the highlights above, plus Lottie, Celery, Stripe and Docker
+    // (Charan, 2026-11-11). Python left out at Charan's request.
     stack: [
       skillIconsKeywords.reactJS,
       skillIconsKeywords.reactRouter,
       skillIconsKeywords.astro,
-      skillIconsKeywords.python,
+      skillIconsKeywords.lottie,
       skillIconsKeywords.django,
+      skillIconsKeywords.celery,
       skillIconsKeywords.restApis,
       skillIconsKeywords.postgres,
+      skillIconsKeywords.stripe,
+      skillIconsKeywords.docker,
       { ...skillIconsKeywords.aws, title: "AWS S3" },
       skillIconsKeywords.claudeCode,
     ],
@@ -348,9 +362,12 @@ export const experience: Experience[] = [
         text: "Wrote Firebase Cloud Functions and the Firebase-to-MongoDB migration.",
       },
     ],
-    // From the highlights above and the resume ("Cloud Functions on GCP").
+    // From the highlights above, the resume ("Cloud Functions on GCP"), plus
+    // Tailwind and Node.js (Charan, 2026-11-11).
     stack: [
       skillIconsKeywords.reactJS,
+      skillIconsKeywords.tailwindCss,
+      skillIconsKeywords.nodeJS,
       { ...skillIconsKeywords.firebase, title: "Firestore" },
       { ...skillIconsKeywords.firebase, title: "Firebase Cloud Functions" },
       skillIconsKeywords.gcp,
